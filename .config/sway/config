@@ -122,6 +122,7 @@ exec wl-paste -t text --watch clipman store
 exec wl-paste -p -t text --watch clipman store -P --histpath="~/.local/state/clipman-primary.json"
 exec dbus-sway-environment
 exec configure-gtk
+exec udiskie
 exec --no-startup-id sway-polkit
 exec swayidle -w \
 	timeout 1800 'swaylock -f' \

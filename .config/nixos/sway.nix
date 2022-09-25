@@ -103,7 +103,7 @@ in {
       swaylock-effects
       thunderbird-wayland
       transmission-gtk
-      udisks2
+      udiskie
       waybar
       wayland
       wl-clipboard
