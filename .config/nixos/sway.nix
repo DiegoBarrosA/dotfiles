@@ -75,8 +75,7 @@ in {
       export _JAVA_AWT_WM_NONREPARENTING=1
     '';
     extraPackages = with pkgs; [
-      swaybg
-      libsForQt5.qtstyleplugin-kvantum
+      alacritty
       autotiling
       capitaine-cursors
       clipman
@@ -88,7 +87,6 @@ in {
       grim
       imv
       kanshi
-      alacritty
       mako
       materia-theme
       mpv
@@ -98,17 +96,19 @@ in {
       polkit
       polkit_gnome
       rofi-wayland
-      wofi
       slurp
       sway-polkit
+      swaybg
       swayidle
       swaylock-effects
       thunderbird-wayland
       transmission-gtk
+      udisks2
       waybar
       wayland
       wl-clipboard
       wlsunset
+      wofi
       xarchiver
       zathura
     ];
