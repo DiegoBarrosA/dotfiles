@@ -9,7 +9,6 @@
       openrgb
       androidStudioPackages.beta
       androidStudioPackages.canary
-      qbittorrent
       krita
       gimp
       inkscape

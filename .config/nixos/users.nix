@@ -12,12 +12,11 @@
       "adbusers"
       "i2c"
       "transmission"
+      "storage"
     ];
     shell = pkgs.fish;
     description = "Diego Barros";
   };
-
-
 
   xdg.mime.addedAssociations = {
     "text/plain" = "userapp-emacsclient -c -a emacs-YBB0Q1.desktop";

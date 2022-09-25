@@ -16,6 +16,7 @@
     gvfs.enable = true;
     devmon.enable = true;
     usbmuxd.enable = true;
+    services.udisks2.enable = true;
     gnome.gnome-keyring.enable = true;
     mpd = {
       enable = true;

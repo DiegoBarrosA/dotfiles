@@ -39,6 +39,7 @@
       talentedhack
       tunefish
       x42-gmsynth
+      airwindows-lv2
       x42-plugins
       ##LADSPA
       AMB-plugins
