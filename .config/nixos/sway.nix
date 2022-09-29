@@ -73,6 +73,7 @@ in {
       export QT_QPA_PLATFORM=wayland-egl
       export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
       export _JAVA_AWT_WM_NONREPARENTING=1
+      export GTK_USE_PORTAL=1
     '';
     extraPackages = with pkgs; [
       alacritty
@@ -102,14 +103,14 @@ in {
       swayidle
       swaylock-effects
       thunderbird-wayland
-      transmission-gtk
-      udiskie
+      transmission-remote-gtk
       waybar
       wayland
       wl-clipboard
       wlsunset
       wofi
       xarchiver
+      xdg-utils
       zathura
     ];
 
@@ -138,7 +139,6 @@ in {
   xdg.portal = {
     enable = true;
     wlr.enable = true;
-    gtkUsePortal = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 

@@ -1,5 +1,7 @@
 { config, pkgs, lib, ... }: {
   config = {
+
+    nixpkgs.config.allowUnfreePredicate = true;
     environment.systemPackages = with pkgs; [
       bluez-tools
       brightnessctl
@@ -43,9 +45,8 @@
       zip
       zoxide
       android-tools
+      unrar
     ];
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [ "unrar" ];
     nixpkgs.overlays = [
       (self: super: {
         ncmpcpp = super.ncmpcpp.override {

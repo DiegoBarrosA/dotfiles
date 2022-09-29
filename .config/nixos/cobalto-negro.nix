@@ -13,6 +13,7 @@
     ./virtmanager.nix
     ./emacs.nix
   ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = false;
   system.autoUpgrade.channel = "https://nixos.org/channels/nixos-22.05";
@@ -71,6 +72,12 @@
     "/nix".options = [ "compress=zstd" "noatime" ];
 
     "/swap".options = [ "noatime" ];
+
+    "/storage/var".options = [ "compress=zstd" ];
+
+    "/storage/home".options = [ "compress=zstd" ];
+
+    "/storage/share".options = [ "compress=zstd" ];
   };
   swapDevices = [{ device = "/swap/swapfile"; }];
 }

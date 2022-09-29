@@ -496,7 +496,3 @@ window,
 .identity-color-red       { --identity-tab-color: var(--uc-identity-colour-red)       !important; --identity-icon-color: var(--uc-identity-colour-red)       !important; --uc-identity-gradient-colour: var(--uc-identity-colour-red-muted) !important;  }
 .identity-color-pink      { --identity-tab-color: var(--uc-identity-colour-pink)      !important; --identity-icon-color: var(--uc-identity-colour-pink)      !important; --uc-identity-gradient-colour: var(--uc-identity-colour-pink-muted) !important;  }
 .identity-color-purple    { --identity-tab-color: var(--uc-identity-colour-purple)    !important; --identity-icon-color: var(--uc-identity-colour-purple)    !important; --uc-identity-gradient-colour: var(--uc-identity-colour-purple-muted) !important;  }
-
-
-
-

@@ -26,7 +26,6 @@
       "${config.environment.sessionVariables.XDG_DATA_HOME}/node_repl_history";
     _JAVA_OPTIONS =
       "-Djava.util.prefs.userRoot=${config.environment.sessionVariables.XDG_CONFIG_HOME}/java";
-
     GTK2_RC_FILES =
       "${config.environment.sessionVariables.XDG_CONFIG_HOME}/gtk-2.0/gtkrc";
     HISTFILE =

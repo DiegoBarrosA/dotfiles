@@ -192,7 +192,3 @@
        :config
        ;;literate
        (default +bindings +smartparens))
-;;; add to $DOOMDIR/init.el
-(defadvice! fixed-doom-module-list (fn &rest args)
-  :around #'doom-module-list
-  (nreverse (apply fn args)))

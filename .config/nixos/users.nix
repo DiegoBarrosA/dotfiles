@@ -18,12 +18,10 @@
     description = "Diego Barros";
   };
 
-  xdg.mime.addedAssociations = {
-    "text/plain" = "userapp-emacsclient -c -a emacs-YBB0Q1.desktop";
-  };
-
+  xdg.mime.enable = true;
+  xdg.sounds.enable = true;
   xdg.mime.defaultApplications = {
-    "text/plain" = "userapp-emacsclient -c -a emacs-YBB0Q1.desktop";
+    "inode/directory" = "${pkgs.pcmanfm}/share/applications/pcmanfm.desktop";
   };
   programs.fish = {
     enable = true;

@@ -1,17 +1,17 @@
-{ config, pkgs, callPackage, ... }: {
-
+{ config, pkgs, callPackage, lib, ... }: {
   services.emacs = {
     package = pkgs.emacsPgtkNativeComp;
     enable = true;
   };
+
+  
   nixpkgs.overlays = [
     (import (builtins.fetchTarball {
-      url =
-        "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
+      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
     }))
   ];
-
   environment.systemPackages = with pkgs; [
+    emacsPgtkNativeComp
     ##Fundamentals
     ripgrep
     fd

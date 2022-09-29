@@ -12,7 +12,9 @@ input * {
     xkb_capslock disabled
     xkb_options grp:alt_space_toggle,shift:both_capslock,caps:escape
 
+
 }
+
 default_border pixel 2
         default_floating_border pixel 2
         hide_edge_borders smart
@@ -44,7 +46,8 @@ bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -1%'
 bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
 for_window [title="Picture-in-Picture"] floating enable; sticky enable
 for_window [title="win0"] floating enable
-for_window [app_id=org.keepassxc.KeePassXC] floating enable; sticky enable 
+for_window [app_id=org.keepassxc.KeePassXC] floating enable; sticky enable
+assign [app_id=transmission-remote-gtk] workspace 0
 assign [app_id=pcmanfm] workspace 4
 assign [app_id=firefox] workspace 1
    floating_modifier $mod normal
@@ -115,15 +118,15 @@ bar {
 }
 bindsym $mod+r mode "resize"
 exec_always autotiling
+exec_always transmission-daemon -g ~/.config/transmission
 exec mako
 exec  wlsunset -l -33.3 -L -70.6
-exec pcmanfm -d --desktop-off
+exec pcmanfm -d --no-desktop
 exec wl-paste -t text --watch clipman store
 exec wl-paste -p -t text --watch clipman store -P --histpath="~/.local/state/clipman-primary.json"
 exec dbus-sway-environment
 exec configure-gtk
-exec udiskie
-exec --no-startup-id sway-polkit
+exec  sway-polkit
 exec swayidle -w \
 	timeout 1800 'swaylock -f' \
 	timeout 1805 'swaymsg "output * dpms off"' \

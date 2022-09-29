@@ -3,12 +3,25 @@
     syncthing = {
       enable = true;
       user = "diego";
-      dataDir = "/home/diego";
+      dataDir = "/storage/var/lib/syncthing";
       configDir = "/home/diego/.config/syncthing";
     };
     printing = {
       enable = true;
       drivers = [ pkgs.brlaser ];
+    };
+    transmission = {
+      enable = true;
+      user = "diego";
+      home = "/storage/var/lib/transmission";
+      settings = {
+        download-dir = "${config.services.transmission.home}/downloads";
+        incomplete-dir = "${config.services.transmission.home}/incomplete";
+        watch-dir-enabled = true;
+        watch-dir = "${config.services.transmission.home}/watchdir";
+        trash-original-torrent-files = true;
+
+      };
     };
     openssh.enable = true;
     flatpak.enable = true;
@@ -37,12 +50,6 @@
 
       network.listenAddress = "any";
       startWhenNeeded = true;
-    };
-    transmission = {
-      enable = true;
-      home = "/home/diego/Downloads/Torrenting";
-      settings.watch-dir = "/home/diego/Downloads";
-
     };
   };
   environment.systemPackages = with pkgs; [ libimobiledevice ifuse ];

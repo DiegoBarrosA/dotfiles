@@ -9,7 +9,8 @@
      (doom-load-theme-hook)
      (initialization)))
  '(warning-suppress-types
-   '((doom-load-theme-hook)
+   '((emacs)
+     (doom-load-theme-hook)
      (doom-load-theme-hook)
      (initialization))))
 (custom-set-faces
