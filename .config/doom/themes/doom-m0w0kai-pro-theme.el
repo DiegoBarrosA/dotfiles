@@ -1,4 +1,4 @@
-;;; doom-monokai-pro-theme.el --- Port of Monokai Pro -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; doom-m0w0kai-pro-theme.el --- Port of Monokai Pro -*- lexical-binding: t; no-byte-compile: t; -*-
 ;;
 ;; Added: May 23, 2021 (#601)
 ;; Author: minikN <https://github.com/minikN>
@@ -33,7 +33,7 @@ Can be an integer to determine the exact padding."
 
   ;; name        gui       256       16
   ((bg         '("#121212" nil       nil          ))
-   (bg-alt     '("#1b1b1b" nil       nil          ))
+   (bg-alt     '("#202020" nil       nil          ))
    (base0      '("#19181A" "black"   "black"      ))
    (base1      '("#1B1B1B" "#1B1B1B"              ))
    (base2      '("#212122" "#212122"              ))
@@ -160,4 +160,4 @@ Can be an integer to determine the exact padding."
   )
 
 (provide 'doom-monokai-pro-theme)
-;;; doom-monokai-pro-theme.el ends here
+;;; doom-m0w0kai-pro-theme.el ends here

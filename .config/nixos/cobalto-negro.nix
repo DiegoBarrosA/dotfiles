@@ -55,6 +55,20 @@
     rocm-opencl-icd
     rocm-opencl-runtime
   ];
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 80 443 ];
+    allowedUDPPortRanges = [
+      {
+        from = 4000;
+        to = 4007;
+      }
+      {
+        from = 8000;
+        to = 8090;
+      }
+    ];
+  };
   networking.hostName = "cobalto-negro";
   networking.hostId = "8556b001";
   networking.useDHCP = false;
