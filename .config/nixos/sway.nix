@@ -1,5 +1,9 @@
 { config, pkgs, lib, ... }:
 let
+  unstable = import
+    (builtins.fetchTarball "https://github.com/nixos/nixpkgs/tarball/master")
+    # reuse the current configuration
+    { config = config.nixpkgs.config; };
   dbus-sway-environment = pkgs.writeTextFile {
     name = "dbus-sway-environment";
     destination = "/bin/dbus-sway-environment";
@@ -104,6 +108,7 @@ in {
       swaylock-effects
       thunderbird-wayland
       transmission-remote-gtk
+      unstable.tofi
       waybar
       wayland
       wl-clipboard

@@ -4,7 +4,7 @@ set $down j
 set $up k
 set $right l
 set $term alacritty
-set $menu rofi -show drun
+set $menu tofi-drun --prompt-text=" Launch:"
 font pango:Jost* 14
 input * {
  xkb_layout "us,es"
@@ -37,7 +37,7 @@ client.urgent           $cl_urge $cl_urge $cl_fore $cl_urge $cl_urge
     bindsym $mod+space exec $menu
     bindsym $mod+s exec screenshot
     bindsym $mod+n exec bluetooth
-    bindsym $mod+c exec clipman pick -t rofi
+    bindsym $mod+c exec clipman pick -t CUSTOM --tool-args="tofi --prompt-text=' Pick:'"
     bindsym $mod+f exec firefox 
     bindsym $mod+e exec pcmanfm
     bindsym $mod+d exec emacsclient -c -a emacs
@@ -54,7 +54,7 @@ assign [app_id=firefox] workspace 1
     bindsym $mod+p sticky toggle
     bindsym $mod+Shift+c reload
 
-    bindsym $mod+Shift+e exec rofi -show p -modi p:powermenu
+    bindsym $mod+Shift+e exec powermenu
     bindsym $mod+$left focus left
     bindsym $mod+$down focus down
     bindsym $mod+$up focus up
