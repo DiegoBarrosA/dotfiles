@@ -1,0 +1,14 @@
+selection-color=#8AB4F8
+font="Jost*, Font Awesome 6 Free Solid"
+background-color=#121212cc
+drun-launch=true
+history=true
+border-width=0px
+width = 100%
+height = 100%
+border-width = 0
+outline-width = 0
+padding-left = 35%
+padding-top = 35%
+result-spacing = 25
+num-results = 5
