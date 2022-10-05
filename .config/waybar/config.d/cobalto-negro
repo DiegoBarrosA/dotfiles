@@ -2,7 +2,7 @@
     "modules-left": [
       "sway/workspaces"
     ],
-    "layer": "bottom",
+    "layer": "top",
     "position": "left",
     "output": "HDMI-A-1",
     "id": "ba",

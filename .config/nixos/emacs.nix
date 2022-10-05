@@ -11,8 +11,8 @@
     }))
   ];
   environment.systemPackages = with pkgs; [
-    emacsPgtkNativeComp
-    ##Fundamentals
+    ((emacsPackagesFor emacs).emacsWithPackages
+      (epkgs: [ epkgs.vterm ])) # #Fundamentals
     ripgrep
     fd
     fzf

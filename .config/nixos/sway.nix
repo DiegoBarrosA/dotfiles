@@ -43,6 +43,7 @@ let
       gsettings set $gnome_schema font-name 'Jost* 12'
       gsettings set $gnome_schema cursor-size 32
 
+
     '';
   };
 
@@ -73,11 +74,16 @@ in {
     enable = true;
     wrapperFeatures.gtk = true;
     extraSessionCommands = ''
-      export SDL_VIDEODRIVER=wayland
-      export QT_QPA_PLATFORM=wayland-egl
-      export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+                        export SDL_VIDEODRIVER=wayland
+                        export QT_QPA_PLATFORM=wayland-egl
+                        export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+                        export GTK_USE_PORTAL=1
+                  export QT_WAYLAND_FORCE_DPI=physical
+                  export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+            export BROWSER=firefox
+            export TERM=alacritty
       export _JAVA_AWT_WM_NONREPARENTING=1
-      export GTK_USE_PORTAL=1
+      export NO_AT_BRIDGE=1
     '';
     extraPackages = with pkgs; [
       alacritty
@@ -95,12 +101,12 @@ in {
       mako
       materia-theme
       mpv
+      ario
       papirus-icon-theme
       pavucontrol
       pcmanfm
       polkit
       polkit_gnome
-      rofi-wayland
       slurp
       sway-polkit
       swaybg

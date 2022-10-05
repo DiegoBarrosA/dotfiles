@@ -20,7 +20,8 @@
         watch-dir-enabled = true;
         watch-dir = "${config.services.transmission.home}/watchdir";
         trash-original-torrent-files = true;
-
+        openRPCPort = true;
+        rpc-bind-address = "0.0.0.0";
       };
     };
     openssh.enable = true;
