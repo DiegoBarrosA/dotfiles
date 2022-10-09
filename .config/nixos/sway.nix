@@ -21,9 +21,7 @@ let
     executable = true;
 
     text = ''
-
       exec ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
-
     '';
 
   };
@@ -48,45 +46,38 @@ let
   };
 
 in {
-  qt5.style = "gtk2";
-  qt5.enable = true;
-  qt5.platformTheme = "gtk2";
   services.greetd = {
     enable = true;
     settings = {
       default_session = {
         command =
-          "${pkgs.greetd.tuigreet}/bin/tuigreet --remember --greeting 'God is dead' --time --cmd sway  --sessions ${pkgs.i3}/share/applications/i3.desktop";
+          "${pkgs.greetd.tuigreet}/bin/tuigreet --remember --greeting 'God is dead' --time --cmd sway";
         user = "greeter";
       };
     };
   };
   security.pam.services.greetd.enableGnomeKeyring = true;
-  environment.etc = {
-    "greetd/environments".text = ''
-      sway
-      fish
-    '';
-  };
   security.polkit.enable = true;
-  services.xserver.windowManager.i3.enable = true;
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
     extraSessionCommands = ''
-                        export SDL_VIDEODRIVER=wayland
-                        export QT_QPA_PLATFORM=wayland-egl
-                        export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-                        export GTK_USE_PORTAL=1
-                  export QT_WAYLAND_FORCE_DPI=physical
-                  export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-            export BROWSER=firefox
-            export TERM=alacritty
+      export SDL_VIDEODRIVER=wayland
+      export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+      export GTK_USE_PORTAL=1
+      export MOZ_ENABLE_WAYLAND=1
+      export QT_WAYLAND_FORCE_DPI=physical
+      export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+      export BROWSER=firefox
+      export TERM=alacritty
       export _JAVA_AWT_WM_NONREPARENTING=1
       export NO_AT_BRIDGE=1
+      export QT_QPA_PLATFORM="wayland-egl;xcb"
+      export SAL_USE_VCLPLUGIN=gtk3
     '';
     extraPackages = with pkgs; [
       alacritty
+      ario
       autotiling
       capitaine-cursors
       clipman
@@ -101,7 +92,6 @@ in {
       mako
       materia-theme
       mpv
-      ario
       papirus-icon-theme
       pavucontrol
       pcmanfm
@@ -132,7 +122,6 @@ in {
     source-sans
     fantasque-sans-mono
   ];
-
   sound.enable = false;
   services.pipewire = {
     enable = true;
@@ -148,5 +137,8 @@ in {
     wlr.enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
+  qt5.style = "gtk2";
+  qt5.enable = true;
+  qt5.platformTheme = "gtk2";
 
 }
