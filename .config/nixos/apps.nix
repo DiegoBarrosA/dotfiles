@@ -14,7 +14,8 @@
       krita
       gimp
       inkscape
-      onlyoffice-bin
+      zoom-us
+      libreoffice-fresh
     ];
 
   };

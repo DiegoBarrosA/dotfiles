@@ -47,6 +47,12 @@ bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
 for_window [title="Picture-in-Picture"] floating enable; sticky enable
 for_window [title="win0"] floating enable
 for_window [app_id=org.keepassxc.KeePassXC] floating enable; sticky enable
+for_window [app_id="zoom" title="^zoom$"] border none, floating enable
+# For specific Zoom windows
+for_window [app_id="zoom" title="^(Zoom|About)$"] border pixel, floating enable
+for_window [app_id="zoom" title="Settings"] floating enable, floating_minimum_size 960 x 700
+# Open Zoom Meeting windows on a new workspace (a bit hacky)
+for_window [app_id="zoom" title="Zoom Meeting(.*)?"] workspace next_on_output --create, move container to workspace current, floating disable, inhibit_idle open
 assign [app_id=transmission-remote-gtk] workspace 10
 assign [app_id=pcmanfm] workspace 4
 assign [app_id=firefox] workspace 1
