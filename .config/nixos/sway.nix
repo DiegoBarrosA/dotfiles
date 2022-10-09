@@ -109,17 +109,13 @@ in {
       polkit_gnome
       slurp
       sway-polkit
-      swaybg
       swayidle
       swaylock-effects
-      thunderbird-wayland
       transmission-remote-gtk
       unstable.tofi
       waybar
-      wayland
       wl-clipboard
       wlsunset
-      wofi
       xarchiver
       xdg-utils
       zathura
