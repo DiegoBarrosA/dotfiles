@@ -108,6 +108,8 @@ in {
       wlsunset
       xarchiver
       xdg-utils
+      gcolor3
+      swappy
       zathura
     ];
 

@@ -1,76 +1,74 @@
 #!/bin/sh
-# Simple screenshot script, dependencies: grim, bemenu, imv, jq, slurp
-# Choose directory to save screenshots and viewer
-#define the theme
-menuexec="rofi -dmenu -m all  -p "
-SHOTPATH="/home/diego/Pictures/Screenshots/"
-VIEWER=imv
 
-WINDOWS=$(swaymsg -t get_tree | jq '.. | (.nodes? // empty)[] | select(.visible and .pid) | "\(.app_id) \(.rect.x),\(.rect.y) \(.rect.width)x\(.rect.height)"')
-FOCUSED=$(swaymsg -t get_tree | jq '.. | (.nodes? // empty)[] | select(.focused and .pid) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')
+# `list_geometry` returns the geometry of the focused of visible windows. You can also get they title
+# by setting a second argument to `with_description`. The geometry and the title are seperated by `\t`.
+#
+# Arguments:
+#   $1: `focused` or `visible`
+#   $2: `with_description` or nothing
+#
+# Output examples:
+#   - with the `with_description` option:
+#      12,43 100x200\tTermite
+#   - without the `with_description` option:
+#      12,43 100x200
+function list_geometry () {
+	[ "$2" = with_description ] && local append="\t\(.name)" || local append=
+	swaymsg -t get_tree | jq -r '.. | (.nodes? // empty)[] | select(.'$1' and .pid) | "\(.rect.x),\(.rect.y) \(.rect.width)x\(.rect.height)'$append'"'
+}
 
-CHOICE=$($menuexec "Please select screenshot area:" << EOF
-Fullscreen
-Selection
-Focus
+WINDOWS=`list_geometry visible with_description`
+FOCUSED=`list_geometry focused`
+
+CHOICE=`tofi --prompt-text 'Screenshot' << EOF
+fullscreen
+region
+focused
 $WINDOWS
-EOF
-)
-#exit if esc was pressed
-if [ $? = 1 ]; then
-    exit
-fi
-FILENAME="${SHOTPATH}screenshot-$(date +'%Y-%m-%d-%H%M%S.png')"
-GRID=\"$(echo $CHOICE | awk ' {print $2,$3} ')
+EOF`
 
-# Name printed when viewing screenshot, adjust if you edit FILENAME"
-FILENAME_SHORT=${FILENAME: -32}
+SAVEDIR=${SWAY_INTERACTIVE_SCREENSHOT_SAVEDIR:=~/Pictures/Screenshots}
+mkdir -p -- "$SAVEDIR"
+FILENAME="$SAVEDIR/$(date +'%Y-%m-%d-%H%M%S_screenshot.png')"
+EXPENDED_FILENAME="${FILENAME/#\~/$HOME}"
 
-if [ "$CHOICE" = Fullscreen ]
+case $CHOICE in
+    fullscreen)
+        grim "$EXPENDED_FILENAME"
+	;;
+    region)
+        grim -g "$(slurp)" "$EXPENDED_FILENAME"
+	;;
+    focused)
+        grim -g "$FOCUSED" "$EXPENDED_FILENAME"
+	;;
+    '')
+        notify-send "Screenshot" "Cancelled"
+        exit 0
+        ;;
+    *)
+    	GEOMETRY="`echo \"$CHOICE\" | cut -d$'\t' -f1`"
+        grim -g "$GEOMETRY" "$EXPENDED_FILENAME"
+esac
+
+# If swappy is installed, prompt the user to edit the captured screenshot
+if command -v swappy $> /dev/null
 then
-    grim "$FILENAME"
-elif [ "$CHOICE" = Selection ]
-then
-    grim -g "$(slurp)" "$FILENAME"
-elif [ "$CHOICE" = Focus ]
-then
-    grim -g "$(eval echo $FOCUSED)" "$FILENAME"
-else
-    grim -g "$(eval echo $GRID)" "$FILENAME"
+    EDIT_CHOICE=`tofi --prompt-text 'Edit' << EOF
+yes
+no
+EOF`
+
+    case $EDIT_CHOICE in
+        yes)
+            swappy -f "$EXPENDED_FILENAME" -o "$EXPENDED_FILENAME"
+            ;;
+        no)
+            ;;
+        '')
+            ;;
+    esac
 fi
 
-
-WAHL=$($menuexec "Screenshot taken" << EOF
-View
-Save
-Discard
-EOF
-)
-if [ $? = 1 ]; then
-    WAHL=Discard
-fi
-if [ "$WAHL" = View ]
-then
-	$VIEWER $FILENAME &
-	WAHL2=$($menuexec "${FILENAME_SHORT}"<< EOF
-	Save
-	Discard
-EOF
-)
-	if [ $WAHL2 = Discard ]
-	then
-	        rm $FILENAME &
-	        PID_VIEWER=$(pidof -s ${VIEWER})
-	        kill -9 ${PID_VIEWER}
-	else
-		PID_VIEWER=$(pidof -s ${VIEWER})
-		kill -9 ${PID_VIEWER}
-		true
-	fi
-elif [ "$WAHL" = Discard ]
-then
-	rm $FILENAME
-else
-	true
-fi
-exit 0
+wl-copy < "$EXPENDED_FILENAME"
+notify-send "Screenshot" "File saved as <i>'$FILENAME'</i> and copied to the clipboard." -i "$EXPENDED_FILENAME"
