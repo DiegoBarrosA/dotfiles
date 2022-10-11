@@ -15,15 +15,16 @@ input * {
 
 }
 
-default_border pixel 2
-        default_floating_border pixel 2
+default_border pixel 3
+        default_floating_border pixel 4
         hide_edge_borders smart
         smart_borders on
-        smart_gaps on
         gaps inner 5
         gaps outer 0
+ smart_gaps on
+
 seat seat0 xcursor_theme "capitaine-cursors" 32
-set $cl_high #8AB4F8
+set $cl_high #1d74ff
 set $cl_indi #d9d8d8
 set $cl_back #121212
 set $cl_fore #d9d8d8
@@ -56,7 +57,7 @@ for_window [app_id="zoom" title="Zoom Meeting(.*)?"] workspace next_on_output --
 assign [app_id=transmission-remote-gtk] workspace 10
 assign [app_id=pcmanfm] workspace 4
 assign [app_id=firefox] workspace 1
-   floating_modifier $mod normal
+floating_modifier $mod normal
     bindsym $mod+p sticky toggle
     bindsym $mod+Shift+c reload
 
