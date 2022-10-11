@@ -8,11 +8,12 @@
 }
 window#waybar {
   background-color: transparent;
-  color: white;
+  color: #dfdff8;
 
 }
 window > box {
   background-color: #121212;
+
 }
 #custom-spacer{
 
@@ -39,14 +40,14 @@ tooltip label {
 #workspaces button {
   padding:9px 0px 9px 0px;
   background-color: #121212;
-  color: white;
+  color: #dfdff8;
 
 }
 #workspaces button.focused {
-  color:  #8AB4F8;
-  background: #272727;
-   border-left: 2px solid  #8AB4F8;
-   border-radius: 0px;
+  color:  #b6d4ff;
+  background: #272f3b;
+   border-left: 2px solid  #8ab4f8;
+   border-radius: 5px;
 }
 
  #mode,
@@ -88,6 +89,8 @@ tooltip label {
   font-family: "Jost*";
 
   padding-bottom: 10px;
+  color:#b6d4ff;
+
 }
 #battery {
   background-color: #121212;
@@ -107,5 +110,5 @@ tooltip label {
 #idle_inhibitor.activated,
 #language,
 #keyboard-state label.locked {
-  color: #ff0071;
+  color: #fe7092;
 }

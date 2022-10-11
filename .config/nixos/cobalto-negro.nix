@@ -77,7 +77,29 @@
   i18n.defaultLocale = "en_US.UTF-8";
   services.openssh.enable = true;
   security.sudo.wheelNeedsPassword = false;
-  console = { keyMap = "us"; };
+  console = {
+    keyMap = "us";
+
+    colors = [
+      "121212" # Background
+      "dc322f"
+      "859900"
+      "b58900"
+      "268bd2"
+      "d33682"
+      "2aa198"
+      "e3ebfe" # foreground
+      "002b36"
+      "cb4b16"
+      "586e75"
+      "657b83"
+      "839496"
+      "6c71c4"
+      "93a1a1"
+      "8ab4f8" # Highlight
+    ];
+
+  };
   hardware.i2c.enable = true;
   environment.systemPackages = [ pkgs.linux-firmware ];
   fileSystems = {

@@ -50,8 +50,8 @@
     @media (prefers-color-scheme: dark) { :root {
 
         --window-colour:                     #121212;
-        --secondary-colour:                  #272727;
-        --inverted-colour:                   #FAFAFC;
+        --secondary-colour:                  #272f3b;
+        --inverted-colour:                   #dfdff8;
 
         /* Containter Tab Colours */
         --uc-identity-colour-blue:            #7ED6DF;
@@ -113,7 +113,7 @@
      +---+---+---+---+---+---+---*/
 
     /* global border radius */
-    --uc-border-radius: 0;
+    --uc-border-radius: 5px;
 
     /* dynamic url bar width settings */
     --uc-urlbar-width: clamp(200px, 40vw, 500px);
