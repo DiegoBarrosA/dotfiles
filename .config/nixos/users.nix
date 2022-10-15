@@ -51,13 +51,13 @@
       format = "$all$directory$character";
       add_newline = false;
       username = {
-        show_always = true;
+        show_always = false;
         style_user = "fg:#ef5fff bold";
         style_root = "fg:#9A348E";
         format = "[$user ]($style)";
       };
       character = {
-        success_symbol = "[|>](bold green)";
+        success_symbol = "[->](bold blue)";
         error_symbol = "[x](bold red)";
         vicmd_symbol = "[I](bold green)";
       };

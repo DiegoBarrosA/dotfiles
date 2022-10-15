@@ -41,7 +41,6 @@ let
       gsettings set $gnome_schema font-name 'Jost* 12'
       gsettings set $gnome_schema cursor-size 32
 
-
     '';
   };
 
@@ -61,22 +60,23 @@ in {
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
+
     extraSessionCommands = ''
       export SDL_VIDEODRIVER=wayland
       export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-      export GTK_USE_PORTAL=1
       export MOZ_ENABLE_WAYLAND=1
       export QT_WAYLAND_FORCE_DPI=physical
       export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
       export BROWSER=firefox
       export TERM=alacritty
-      export _JAVA_AWT_WM_NONREPARENTING=1
       export NO_AT_BRIDGE=1
       export QT_QPA_PLATFORM="wayland-egl;xcb"
       export SAL_USE_VCLPLUGIN=gtk3
+      export _JAVA_AWT_WM_NONREPARENTING=1
     '';
     extraPackages = with pkgs; [
       alacritty
+      wezterm
       ario
       autotiling
       capitaine-cursors
@@ -112,7 +112,6 @@ in {
       swappy
       zathura
     ];
-
   };
   fonts.fonts = with pkgs; [
     font-awesome
@@ -137,7 +136,8 @@ in {
   xdg.portal = {
     enable = true;
     wlr.enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
+    gtkUsePortal = true;
   };
   qt5.style = "gtk2";
   qt5.enable = true;
