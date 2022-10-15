@@ -8,11 +8,8 @@ set $menu tofi-drun --prompt-text=" Launch:"
 font pango:Jost* 14
 input * {
  xkb_layout "us,es"
-
     xkb_capslock disabled
     xkb_options grp:alt_space_toggle,shift:both_capslock,caps:escape
-
-
 }
 
 default_border pixel 3
@@ -21,8 +18,7 @@ default_border pixel 3
         smart_borders on
         gaps inner 5
         gaps outer 0
- smart_gaps on
-
+        smart_gaps on
 seat seat0 xcursor_theme "capitaine-cursors" 32
 set $cl_high #1d74ff
 set $cl_indi #d9d8d8
@@ -47,6 +43,8 @@ bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -1%'
 bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
 for_window [title="Picture-in-Picture"] floating enable; sticky enable
 for_window [title="win0"] floating enable
+
+for_window [title="Firefox — Sharing Indicator"] floating enable
 for_window [app_id=org.keepassxc.KeePassXC] floating enable; sticky enable
 for_window [app_id="zoom" title="^zoom$"] border none, floating enable
 # For specific Zoom windows

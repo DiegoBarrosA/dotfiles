@@ -1,7 +1,8 @@
 selection-color=#8AB4F8
 font="Jost*, Font Awesome 6 Free Solid"
+font-size=26
 hide-cursor=true
-background-color=#121212ef
+background-color=#121212ff
 drun-launch=true
 history=true
 border-width=0px

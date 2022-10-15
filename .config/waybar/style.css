@@ -2,9 +2,6 @@
   font-family: "Jost*,Font Awesome 6 Free Solid, Font Awesome 6 Brands";
   font-size: 17px;
   min-width: 40px;
-
-
-  border-radius:0px;
 }
 window#waybar {
   background-color: transparent;
@@ -47,7 +44,7 @@ tooltip label {
   color:  #b6d4ff;
   background: #272f3b;
    border-left: 2px solid  #8ab4f8;
-   border-radius: 5px;
+   border-radius: 8px;
 }
 
  #mode,
