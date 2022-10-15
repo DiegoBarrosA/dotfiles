@@ -486,13 +486,3 @@ window,
 
 
 
-
-/* Container Tabs */
-.identity-color-blue      { --identity-tab-color: var(--uc-identity-colour-blue)      !important; --identity-icon-color: var(--uc-identity-colour-blue)      !important; --uc-identity-gradient-colour: var(--uc-identity-colour-blue-muted) !important; }
-.identity-color-turquoise { --identity-tab-color: var(--uc-identity-colour-turquoise) !important; --identity-icon-color: var(--uc-identity-colour-turquoise) !important; --uc-identity-gradient-colour: var(--uc-identity-colour-turquoise-muted) !important;  }
-.identity-color-green     { --identity-tab-color: var(--uc-identity-colour-green)     !important; --identity-icon-color: var(--uc-identity-colour-green)     !important; --uc-identity-gradient-colour: var(--uc-identity-colour-green-muted) !important;  }
-.identity-color-yellow    { --identity-tab-color: var(--uc-identity-colour-yellow)    !important; --identity-icon-color: var(--uc-identity-colour-yellow)    !important; --uc-identity-gradient-colour: var(--uc-identity-colour-yellow-muted) !important;  }
-.identity-color-orange    { --identity-tab-color: var(--uc-identity-colour-orange)    !important; --identity-icon-color: var(--uc-identity-colour-orange)    !important; --uc-identity-gradient-colour: var(--uc-identity-colour-orange-muted) !important;  }
-.identity-color-red       { --identity-tab-color: var(--uc-identity-colour-red)       !important; --identity-icon-color: var(--uc-identity-colour-red)       !important; --uc-identity-gradient-colour: var(--uc-identity-colour-red-muted) !important;  }
-.identity-color-pink      { --identity-tab-color: var(--uc-identity-colour-pink)      !important; --identity-icon-color: var(--uc-identity-colour-pink)      !important; --uc-identity-gradient-colour: var(--uc-identity-colour-pink-muted) !important;  }
-.identity-color-purple    { --identity-tab-color: var(--uc-identity-colour-purple)    !important; --identity-icon-color: var(--uc-identity-colour-purple)    !important; --uc-identity-gradient-colour: var(--uc-identity-colour-purple-muted) !important;  }
