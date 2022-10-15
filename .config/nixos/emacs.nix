@@ -11,13 +11,12 @@
     }))
   ];
   environment.systemPackages = with pkgs; [
-    ((emacsPackagesFor emacs).emacsWithPackages
+    ((emacsPackagesFor emacsPgtkNativeComp).emacsWithPackages
       (epkgs: [ epkgs.vterm ])) # #Fundamentals
     ripgrep
     fd
     fzf
     ##formating
-
     shellcheck
     ispell
     black
@@ -39,5 +38,6 @@
     ###CSS
     nodePackages.js-beautify
     tetex
+    tree-sitter-grammars.tree-sitter-typescript
   ];
 }
