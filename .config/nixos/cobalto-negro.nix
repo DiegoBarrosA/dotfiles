@@ -78,8 +78,10 @@
   services.openssh.enable = true;
   security.sudo.wheelNeedsPassword = false;
   console = {
+    earlySetup = true;
     keyMap = "us";
-
+    font = "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz";
+    packages = with pkgs; [ terminus_font ];
     colors = [
       "121212" # Background
       "dc322f"
