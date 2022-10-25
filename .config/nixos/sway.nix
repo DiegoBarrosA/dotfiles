@@ -25,6 +25,33 @@ let
     '';
 
   };
+  style-greet = pkgs.writeTextFile {
+    name = "style-greet";
+    destination = "/etc/greet.css";
+
+    text = ''
+      @import url("${pkgs.materia-theme}/share/themes/Materia-dark/gtk-3.0/gtk.css");
+               *{
+            font: 16px "Jost*";
+                }
+                            window {
+                                background-image: url("file://${background-greet}");
+                                background-size: cover;
+                                background-position: center;
+                             }
+
+                              box#body {
+                                background-color: rgba(50, 50, 50, 0);
+                                border-radius: 10px;
+                                padding: 50px;
+                             }
+    '';
+  };
+  background-greet = pkgs.fetchurl {
+    url =
+      "https://raw.githubusercontent.com/DiegoBarrosA/dotfiles/current/.local/share/backgrounds/nix-wallpaper-nineish-dark-gray.png";
+    sha256 = "nhIUtCy/Hb8UbuxXeL3l3FMausjQrnjTVi1B3GkL9B8=";
+  };
   configure-gtk = pkgs.writeTextFile {
     name = "configure-gtk";
     destination = "/bin/configure-gtk";
@@ -40,43 +67,76 @@ let
       gsettings set $gnome_schema cursor-theme 'capitaine-cursors'
       gsettings set $gnome_schema font-name 'Jost* 12'
       gsettings set $gnome_schema cursor-size 32
+      gsettings set org.gtk.Settings.FileChooser startup-mode cwd
 
+    '';
+  };
+  greetd-sway-config = pkgs.writeTextFile {
+    name = "greetd-sway-config";
+    destination = "/etc/config";
+
+    text = ''
+                 # `-l` activates layer-shell mode. Notice that `swaymsg exit` will run after gtkgreet.
+                 exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s ${style-greet}/etc/greet.css  -c sway; swaymsg exit"
+      seat seat0 xcursor_theme "capitaine-cursors" 32
+                 bindsym Mod4+shift+e exec swaynag \
+                   -t warning \
+                   -m 'What do you want to do?' \
+                   -b 'Poweroff' 'systemctl poweroff' \
+                   -b 'Reboot' 'systemctl reboot'
+            exec "${dbus-sway-environment}/bin/dbus-sway-environment"
+            exec "${configure-gtk}/bin/configure-gtk"
     '';
   };
 
 in {
   services.greetd = {
     enable = true;
+    package = pkgs.greetd.gtkgreet;
     settings = {
       default_session = {
         command =
-          "${pkgs.greetd.tuigreet}/bin/tuigreet --remember --greeting 'God is dead' --time --cmd sway";
+          "${pkgs.sway}/bin/sway --config ${greetd-sway-config}/etc/config";
         user = "greeter";
       };
     };
   };
+  environment.etc."greetd/environments".text = ''
+    sway
+    cage win10-session
+    fish
+    bash
+  '';
   security.pam.services.greetd.enableGnomeKeyring = true;
   security.polkit.enable = true;
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
-
     extraSessionCommands = ''
       export SDL_VIDEODRIVER=wayland
       export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+      export CLUTTER_BACKEND=wayland
+      export SDL_VIDEODRIVER=wayland
       export MOZ_ENABLE_WAYLAND=1
       export QT_WAYLAND_FORCE_DPI=physical
       export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+      export GTK_THEME="Materia-dark"
       export BROWSER=firefox
       export TERM=alacritty
       export NO_AT_BRIDGE=1
-      export QT_QPA_PLATFORM="wayland-egl;xcb"
+      export QT_QPA_PLATFORM=wayland-egl
       export SAL_USE_VCLPLUGIN=gtk3
+      ##JAVA
       export _JAVA_AWT_WM_NONREPARENTING=1
+      export ECORE_EVAS_ENGINE=wayland_egl
+      export ELM_ENGINE=wayland_egl
+
     '';
     extraPackages = with pkgs; [
-      alacritty
-      wezterm
+      win10-session
+      qt5.qtwayland
+      greetd.gtkgreet
+      kitty
       ario
       autotiling
       capitaine-cursors
