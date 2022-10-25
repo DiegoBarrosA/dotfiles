@@ -12,7 +12,9 @@
     ./users.nix
     ./virtmanager.nix
     ./emacs.nix
+    ./openrgb.nix
   ];
+  nixpkgs.overlays = [ (import /etc/nixos/packages) ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = false;
@@ -28,10 +30,12 @@
       "rd.systemd.show_status=false"
       "rd.udev.log_level=0"
       "udev.log_priority=0"
+      "fbcon=nodefer"
     ];
     plymouth = {
-
       enable = true;
+      themePackages = [ pkgs.plymouth-themes ];
+      theme = "loader_2";
     };
     consoleLogLevel = 0;
     initrd.verbose = false;
@@ -82,28 +86,11 @@
     keyMap = "us";
     font = "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz";
     packages = with pkgs; [ terminus_font ];
-    colors = [
-      "121212" # Background
-      "dc322f"
-      "859900"
-      "b58900"
-      "268bd2"
-      "d33682"
-      "2aa198"
-      "e3ebfe" # foreground
-      "002b36"
-      "cb4b16"
-      "586e75"
-      "657b83"
-      "839496"
-      "6c71c4"
-      "93a1a1"
-      "8ab4f8" # Highlight
-    ];
-
   };
   hardware.i2c.enable = true;
-  environment.systemPackages = [ pkgs.linux-firmware ];
+  hardware.openrgb.enable = true;
+  environment.systemPackages = [ pkgs.linux-firmware pkgs.cage pkgs.kitty ];
+
   fileSystems = {
     "/".options = [ "compress=zstd" ];
     "/home".options = [ "compress=zstd" ];
