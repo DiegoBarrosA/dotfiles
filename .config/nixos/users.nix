@@ -11,12 +11,14 @@
       "camera"
       "adbusers"
       "i2c"
+      "uucp"
       "transmission"
       "storage"
     ];
     shell = pkgs.fish;
     description = "Diego Barros";
   };
+  users.users.greeter.extraGroups = [ "video" ];
 
   xdg.mime.enable = true;
   xdg.sounds.enable = true;

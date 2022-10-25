@@ -26,6 +26,7 @@
       "${config.environment.sessionVariables.XDG_DATA_HOME}/node_repl_history";
     _JAVA_OPTIONS =
       "-Djava.util.prefs.userRoot=${config.environment.sessionVariables.XDG_CONFIG_HOME}/java";
+    GNUPGHOME = "${config.environment.sessionVariables.XDG_DATA_HOME}/gnupg";
     GTK2_RC_FILES =
       "${config.environment.sessionVariables.XDG_CONFIG_HOME}/gtk-2.0/gtkrc";
     HISTFILE =
@@ -51,6 +52,7 @@
     "RANGER_LOAD_DEFAULT_RC" = "false";
     "OCL_ICD_VENDORS" =
       " `nix-build '<nixpkgs>' --no-out-link -A rocm-opencl-icd`/etc/OpenCL/vendors/";
+    LIBVIRT_DEFAULT_URI = "qemu:///system";
 
   };
 }
