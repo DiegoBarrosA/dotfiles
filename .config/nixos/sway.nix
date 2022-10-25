@@ -165,17 +165,21 @@ in {
       configure-gtk
       dbus-sway-environment
       firefox-wayland
+      gnome3.adwaita-icon-theme
       glib
       greetd.gtkgreet
       grim
+      gtk-engine-murrine
       imv
       kanshi
       mako
       materia-theme
       mpv
-      papirus-icon-theme
+      unstable.papirus-icon-theme
       pavucontrol
       pcmanfm
+      libgsf
+      ffmpegthumbnailer
       polkit
       polkit_gnome
       slurp
@@ -189,9 +193,12 @@ in {
       wlsunset
       xarchiver
       xdg-utils
+      swaybg
       gcolor3
       swappy
       zathura
+      materia-kde-theme
+      libsForQt5.qtstyleplugin-kvantum
     ];
   };
   fonts.fonts = with pkgs; [
@@ -203,6 +210,7 @@ in {
     source-han-sans
     source-sans
     fantasque-sans-mono
+    iosevka
   ];
   sound.enable = false;
   services.pipewire = {
@@ -217,11 +225,9 @@ in {
   xdg.portal = {
     enable = true;
     wlr.enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     gtkUsePortal = true;
-  };
-  qt5.style = "gtk2";
-  qt5.enable = true;
-  qt5.platformTheme = "gtk2";
 
+  };
+  programs.qt5ct.enable = true;
 }
