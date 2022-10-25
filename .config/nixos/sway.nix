@@ -25,6 +25,27 @@ let
     '';
 
   };
+  win10-session = pkgs.writeTextFile {
+    name = "win10-session";
+    destination = "/bin/win10-session";
+    executable = true;
+
+    text = ''
+      #!/bin/sh
+      if (virsh list --state-running | grep win10); then
+
+          win10=$(virt-viewer --attach -k --kiosk-quit=on-disconnect --domain-name win10)
+      else
+          win10=$(virsh start win10 && virt-viewer --attach -k --kiosk-quit=on-disconnect --domain-name win10)
+      fi
+
+      exec "$win10"
+
+      exit
+    '';
+
+  };
+
   style-greet = pkgs.writeTextFile {
     name = "style-greet";
     destination = "/etc/greet.css";
