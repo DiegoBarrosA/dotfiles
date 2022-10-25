@@ -4,8 +4,8 @@
       steam-tui
       superTuxKart
       lutris
-      polymc
       minetest
+      prismlauncher
       retroarchFull
     ];
     nixpkgs.config.allowUnfree = true;
