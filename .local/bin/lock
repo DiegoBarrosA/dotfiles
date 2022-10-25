@@ -1,5 +1,5 @@
 #!/bin/sh
 ##This is a workaround a bug with rofi not dissapearing when tirggering swaylock from it
-pkill rofi
+pkill tofi
 swaylock
 exit

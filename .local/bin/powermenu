@@ -7,5 +7,5 @@ case "$(
         \ Restart) exec systemctl reboot ;;
         \ Logout) exec loginctl terminate-session ${XDG_SESSION_ID-} ;;
         \ Suspend) exec systemctl suspend ;;
-        \ Lock) exec lock ;;
+        \ Lock) exec swaylock ;;
 esac
