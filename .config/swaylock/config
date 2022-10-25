@@ -4,18 +4,20 @@ indicator
 hide-keyboard-layout
 caps-lock-bs-hl-color=00000000
 effect-blur=7x5
-effect-vignette=0.5:0.5
+effect-vignette=0.3:0.3
 fade-in=1
-font-size=50
+font-size=65
 font=Jost*
 grace=1
-indicator-radius=150
-indicator-thickness=10
+timestr=%H:%M
+datestr=%A %e %b, %Y
+indicator-radius=200
+indicator-thickness=5
 inside-clear-color=FFE500ff
-inside-color=00000090
+inside-color=121212cc
 inside-ver-color=FFE500ff
 inside-wrong-color=FF0050ff
-key-hl-color=8AB4F8
+key-hl-color=1d74ffdd
 line-clear-color=FFE500ff
 line-color=00000000
 line-ver-color=FFE500ff
