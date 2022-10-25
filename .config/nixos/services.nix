@@ -54,7 +54,6 @@
       startWhenNeeded = true;
     };
   };
-  environment.systemPackages = with pkgs; [ libimobiledevice ifuse ];
 
   hardware.bluetooth.enable = true;
   hardware.bluetooth.package = pkgs.bluez5-experimental;

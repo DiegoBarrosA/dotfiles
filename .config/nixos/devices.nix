@@ -1,7 +1,6 @@
 { config, pkgs, ... }: {
   config = {
     environment.systemPackages = with pkgs; [
-      android-file-transfer
       sshfs
       libimobiledevice
       ifuse
@@ -10,6 +9,13 @@
       android-tools
     ];
     programs.adb.enable = true;
-    services.usbmuxd.enable = true;
+    services = {
+      usbmuxd.enable = true;
+      gvfs.enable = true;
+      devmon.enable = true;
+      #udisks2.enable = true;
+      udev.packages = [ pkgs.android-udev-rules ];
+    };
   };
+
 }
