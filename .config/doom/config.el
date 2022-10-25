@@ -97,6 +97,14 @@
       (insert (make-string (or (cdr +doom-dashboard-banner-padding) 0)
                            ?\n)))))
 
+(use-package tabspaces
+  :commands (tabspaces-switch-or-create-workspace
+             tabspaces-open-or-create-project-and-workspace)
+  :custom
+  (tabspaces-use-filtered-buffers-as-default t)
+  (tabspaces-default-tab "Default")
+  (tabspaces-remove-to-default t)
+  (tabspaces-include-buffers '("*scratch*")))
 
 ;;(setq fancy-splash-image "/home/diego/Pictures/Memes/pngegg.png")
 ;; Must be used *after* the theme is loaded
