@@ -39,7 +39,6 @@
     };
     consoleLogLevel = 0;
     initrd.verbose = false;
-
     initrd.systemd.enable = true;
     loader = {
       systemd-boot = {
@@ -84,7 +83,7 @@
   console = {
     earlySetup = true;
     keyMap = "us";
-    font = "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz";
+    font = "${pkgs.terminus_font}/share/consolefonts/ter-214n.psf.gz";
     packages = with pkgs; [ terminus_font ];
   };
   hardware.i2c.enable = true;

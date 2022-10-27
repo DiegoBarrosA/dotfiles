@@ -97,16 +97,16 @@ let
     destination = "/etc/config";
 
     text = ''
-                 # `-l` activates layer-shell mode. Notice that `swaymsg exit` will run after gtkgreet.
-                 exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s ${style-greet}/etc/greet.css  -c sway; swaymsg exit"
+      exec "${dbus-sway-environment}/bin/dbus-sway-environment"
+      exec "${configure-gtk}/bin/configure-gtk"
+      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s ${style-greet}/etc/greet.css  -c sway; swaymsg exit"
       seat seat0 xcursor_theme "capitaine-cursors" 32
-                 bindsym Mod4+shift+e exec swaynag \
-                   -t warning \
-                   -m 'What do you want to do?' \
-                   -b 'Poweroff' 'systemctl poweroff' \
-                   -b 'Reboot' 'systemctl reboot'
-            exec "${dbus-sway-environment}/bin/dbus-sway-environment"
-            exec "${configure-gtk}/bin/configure-gtk"
+      bindsym Mod4+shift+e exec swaynag \
+        -t warning \
+        -m 'What do you want to do?' \
+        -b 'Poweroff' 'systemctl poweroff' \
+        -b 'Reboot' 'systemctl reboot'
+
     '';
   };
 
@@ -151,6 +151,7 @@ in {
       export _JAVA_AWT_WM_NONREPARENTING=1
       export ECORE_EVAS_ENGINE=wayland_egl
       export ELM_ENGINE=wayland_egl
+
 
     '';
     extraPackages = with pkgs; [

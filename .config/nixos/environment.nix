@@ -54,5 +54,6 @@
       " `nix-build '<nixpkgs>' --no-out-link -A rocm-opencl-icd`/etc/OpenCL/vendors/";
     LIBVIRT_DEFAULT_URI = "qemu:///system";
 
+    XCURSOR_THEME = "capitaine-cursors";
   };
 }
