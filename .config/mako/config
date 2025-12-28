@@ -1,0 +1,47 @@
+# Material Darker theme for Mako notification daemon
+
+# Font configuration
+font=FantasqueSansMono 12
+
+# General settings
+max-visible=5
+sort=-time
+layer=overlay
+anchor=top-right
+margin=10
+padding=12
+width=350
+height=120
+border-size=2
+border-radius=4
+icons=1
+icon-path=/usr/share/icons/Adwaita
+max-icon-size=48
+default-timeout=5000
+ignore-timeout=0
+
+# Material Darker colors
+background-color=#212121FA
+text-color=#EEFFFF
+border-color=#82AAFF
+progress-color=over #89DDFF
+
+# Urgency levels
+[urgency=low]
+background-color=#212121FA
+text-color=#B2CCD6
+border-color=#303030
+default-timeout=3000
+
+[urgency=normal]
+background-color=#212121FA
+text-color=#EEFFFF
+border-color=#82AAFF
+default-timeout=5000
+
+[urgency=critical]
+background-color=#FF5370
+text-color=#212121
+border-color=#F07178
+default-timeout=0
+

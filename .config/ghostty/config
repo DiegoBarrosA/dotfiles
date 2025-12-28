@@ -1,0 +1,21 @@
+# ghostty configuration file (Updated Syntax)
+# Place this file at ~/.config/ghostty/config
+
+# -----------------------------------------------------------------------------
+# Font Configuration
+# -----------------------------------------------------------------------------
+# This section remains largely the same.
+font-family = "Fantasque Sans Mono"
+font-size = 19
+theme = Material Darker
+# Optional: Uncomment to enable font ligatures if your font supports them.
+# font-features = "liga", "calt"
+window-theme=ghostty
+window-decoration=server
+window-titlebar-background=#212121
+gtk-titlebar=true
+gtk-toolbar-style=flat
+confirm-close-surface=false
+
+# Shell
+# command = /snap/bin/nu
