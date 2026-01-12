@@ -1,0 +1,16 @@
+---
+# Swaylock screen locker configuration role
+
+- name: Create swaylock config directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/swaylock"
+    state: directory
+    mode: '0755'
+  tags: [swaylock, config]
+
+- name: Deploy swaylock config
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../configs/swaylock/config"
+    dest: "{{ user_home }}/.config/swaylock/config"
+    mode: '0644'
+  tags: [swaylock, config]

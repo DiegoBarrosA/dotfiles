@@ -1,0 +1,134 @@
+/* Waybar Style - Material Darker Theme */
+
+/* Reset GTK styling that might leak in */
+* {
+    font-family: "Cantarell", "Font Awesome 7 Free Solid", "Font Awesome 7 Brands", monospace;
+    font-size: 18px;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background-color: #212121;
+    color: #eeffff;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    background-color: transparent;
+    color: #b2ccd6;
+    border: none;
+    border-radius: 0;
+}
+
+#workspaces button:hover {
+    background: rgba(130, 170, 255, 0.2);
+    border: none;
+}
+
+#workspaces button.focused {
+    background-color: #82aaff;
+    color: #303030;
+    border: none;
+}
+
+#workspaces button.urgent {
+    background-color: #f07178;
+    color: #212121;
+    border: none;
+}
+
+#mode {
+    background-color: #c792ea;
+    color: #212121;
+    padding: 0 10px;
+}
+
+#window {
+    color: #b2ccd6;
+    padding: 0 10px;
+}
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#backlight,
+#network,
+#pulseaudio,
+#language,
+#tray {
+    padding: 0 12px;
+    color: #eeffff;
+}
+
+#clock {
+    font-weight: 500;
+}
+
+#battery.warning:not(.charging) {
+    color: #f78c6c;
+}
+
+#battery.critical:not(.charging) {
+    background-color: #ff5370;
+    color: #212121;
+    animation: blink 0.5s linear infinite alternate;
+}
+
+@keyframes blink {
+    to {
+        background-color: #212121;
+        color: #ff5370;
+    }
+}
+
+#cpu {
+    color: #89ddff;
+}
+
+#memory {
+    color: #c792ea;
+}
+
+#backlight {
+    color: #ffcb6b;
+}
+
+#network.disconnected {
+    color: #ff5370;
+}
+
+#pulseaudio.muted {
+    color: #4a4a4a;
+}
+
+#tray {
+    background-color: #212121;
+    border-top: 2px solid #ff5370;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #ff5370;
+}
+
+tooltip {
+    background-color: #212121;
+    border: 1px solid #82aaff;
+    border-radius: 4px;
+}
+
+tooltip label {
+    color: #eeffff;
+}

@@ -1,0 +1,207 @@
+# Sway Configuration
+# Material Darker Theme
+
+# Variables
+set $mod Mod4
+set $term alacritty
+set $menu fuzzel
+
+# Colors (Material Darker)
+set $base00 #212121
+set $base01 #303030
+set $base02 #353535
+set $base03 #4a4a4a
+set $base04 #b2ccd6
+set $base05 #eeffff
+set $base06 #eeffff
+set $base07 #ffffff
+set $base08 #f07178
+set $base09 #f78c6c
+set $base0A #ffcb6b
+set $base0B #c3e88d
+set $base0C #89ddff
+set $base0D #82aaff
+set $base0E #c792ea
+set $base0F #ff5370
+
+# Font
+font pango:Cantarell 13
+
+# Window borders
+default_border pixel 3
+default_floating_border pixel 3
+titlebar_border_thickness 0
+titlebar_padding 8 4
+
+# Gaps
+gaps inner 4
+gaps outer 2
+smart_gaps on
+smart_borders on
+
+# Window colors
+#                       border    bg        text      indicator child_border
+client.focused          $base00   $base00   $base0D   $base0C   $base0D
+client.focused_inactive $base0D   $base0D   $base01   $base03   $base03
+client.unfocused        $base00   $base00   $base04   $base02   $base02
+client.urgent           $base08   $base00   $base08   $base08   $base08
+client.placeholder      $base00   $base00   $base03   $base00   $base00
+client.background       $base00
+
+# Output configuration
+output * bg $base00 solid_color
+
+# Input configuration
+input type:keyboard {
+    xkb_layout us,es
+    xkb_options caps:ctrl_modifier,grp:alt_space_toggle
+}
+
+input type:touchpad {
+    natural_scroll enabled
+    tap enabled
+    dwt enabled
+}
+
+# Cursor
+seat * xcursor_theme phinger-cursors-dark 24
+
+# Workspace assignments
+assign [app_id="firefox"] 5
+assign [app_id="firefox_firefox"] 5
+assign [app_id="cursor"] 6
+assign [app_id="pcmanfm"] 7
+assign [app_id="obsidian"] 8
+
+# Window rules
+for_window [app_id="flameshot"] border pixel 0, floating enable, fullscreen disable, move absolute position 0 0
+
+# Floating modifier
+floating_modifier $mod
+
+# Keybindings - Basics
+bindsym $mod+Return exec $term
+bindsym $mod+w kill
+bindsym $mod+space exec $menu
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+e exec ~/.config/sway/scripts/power-menu.sh
+bindsym $mod+Escape exec swaylock -f
+
+# Brightness controls
+bindsym XF86MonBrightnessUp exec light -A 15
+bindsym XF86MonBrightnessDown exec light -U 15
+
+# Volume controls
+bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+
+# Screenshot controls
+bindsym $mod+Shift+s exec flameshot gui
+bindsym Print exec grim - | wl-copy
+bindsym $mod+Shift+a exec grim -g "$(slurp)" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
+
+# Focus movement
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Window movement
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Workspaces
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+# Move to workspaces
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# Layout
+bindsym $mod+b splith
+bindsym $mod+v splitv
+bindsym $mod+u layout stacking
+bindsym $mod+i layout tabbed
+bindsym $mod+o layout toggle split
+bindsym $mod+Shift+f fullscreen
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+a focus parent
+
+# Scratchpad
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+# Launch-or-focus shortcuts
+bindsym $mod+f exec ~/.config/sway/scripts/launch-or-focus.sh firefox 5 firefox
+bindsym $mod+d exec ~/.config/sway/scripts/launch-or-focus.sh cursor 6 cursor --enable-features=UseOzonePlatform --ozone-platform=wayland
+bindsym $mod+e exec ~/.config/sway/scripts/launch-or-focus.sh pcmanfm 7 pcmanfm
+bindsym $mod+n exec ~/.config/sway/scripts/launch-or-focus.sh obsidian 8 obsidian
+
+# Resize mode
+bindsym $mod+r mode "resize"
+mode "resize" {
+    bindsym h resize shrink width 10px
+    bindsym j resize grow height 10px
+    bindsym k resize shrink height 10px
+    bindsym l resize grow width 10px
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+# Status bar
+bar {
+    swaybar_command waybar
+}
+
+# Lid switch behavior
+bindswitch --reload --locked lid:on exec 'swaylock -f && systemctl suspend'
+
+# Startup commands
+exec swayr daemon
+exec autotiling
+exec swayidle -w timeout 300 'swaylock -f' timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' before-sleep 'swaylock -f'
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway XCURSOR_THEME XCURSOR_SIZE
+exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XCURSOR_THEME XCURSOR_SIZE DISPLAY SWAYSOCK
+
+# GTK settings
+exec_always {
+    gsettings set org.gnome.desktop.interface cursor-theme 'phinger-cursors-dark'
+    gsettings set org.gnome.desktop.interface cursor-size 24
+}
+
+# Include system configs
+include /etc/sway/config-vars.d/*
+include /etc/sway/config.d/*

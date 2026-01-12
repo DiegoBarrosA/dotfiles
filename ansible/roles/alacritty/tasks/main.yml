@@ -1,0 +1,24 @@
+---
+# Alacritty terminal configuration role
+
+- name: Create alacritty config directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/alacritty"
+    state: directory
+    mode: '0755'
+  tags: [alacritty, config]
+
+- name: Deploy alacritty config
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../configs/alacritty/alacritty.toml"
+    dest: "{{ user_home }}/.config/alacritty/alacritty.toml"
+    mode: '0644'
+  tags: [alacritty, config]
+
+- name: Set TERMINAL environment variable in profile
+  ansible.builtin.lineinfile:
+    path: "{{ user_home }}/.profile"
+    line: 'export TERMINAL=alacritty'
+    create: true
+    mode: '0644'
+  tags: [alacritty, config]

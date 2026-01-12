@@ -1,0 +1,118 @@
+---
+# Package installation role
+
+- name: Update apt cache
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  tags: [packages]
+
+- name: Install Sway and Wayland essentials
+  become: true
+  ansible.builtin.apt:
+    name:
+      - sway
+      - swaylock
+      - swayidle
+      - swaybg
+      - waybar
+      - wl-clipboard
+      - xdg-desktop-portal-wlr
+      - xdg-desktop-portal-gtk
+      - xwayland
+    state: present
+  tags: [packages]
+
+- name: Install application launcher and notifications
+  become: true
+  ansible.builtin.apt:
+    name:
+      - fuzzel
+      - mako-notifier
+    state: present
+  tags: [packages]
+
+- name: Install terminal emulator
+  become: true
+  ansible.builtin.apt:
+    name:
+      - alacritty
+    state: present
+  tags: [packages]
+
+- name: Install screenshot and screen recording tools
+  become: true
+  ansible.builtin.apt:
+    name:
+      - grim
+      - slurp
+      - flameshot
+    state: present
+  tags: [packages]
+
+- name: Install audio/video utilities
+  become: true
+  ansible.builtin.apt:
+    name:
+      - pipewire
+      - pipewire-pulse
+      - wireplumber
+      - pavucontrol
+      - playerctl
+    state: present
+  tags: [packages]
+
+- name: Install brightness control
+  become: true
+  ansible.builtin.apt:
+    name:
+      - light
+    state: present
+  tags: [packages]
+
+- name: Install utility packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - jq
+      - dconf-cli
+      - gsettings-desktop-schemas
+    state: present
+  tags: [packages]
+
+- name: Install GTK theming packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - gnome-themes-extra
+      - adwaita-icon-theme
+      - papirus-icon-theme
+    state: present
+  tags: [packages]
+
+- name: Add user to video group (for brightness control)
+  become: true
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    groups: video
+    append: true
+  tags: [packages]
+
+- name: Install swayr from cargo (window switcher)
+  ansible.builtin.command:
+    cmd: cargo install swayr
+    creates: "{{ user_home }}/.cargo/bin/swayr"
+  environment:
+    PATH: "{{ user_home }}/.cargo/bin:{{ ansible_env.PATH }}"
+  ignore_errors: true
+  tags: [packages]
+
+- name: Install autotiling-rs from cargo
+  ansible.builtin.command:
+    cmd: cargo install autotiling-rs
+    creates: "{{ user_home }}/.cargo/bin/autotiling"
+  environment:
+    PATH: "{{ user_home }}/.cargo/bin:{{ ansible_env.PATH }}"
+  ignore_errors: true
+  tags: [packages]

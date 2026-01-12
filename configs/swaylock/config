@@ -1,0 +1,55 @@
+# Swaylock Configuration - Material Darker Theme
+
+# Behavior
+daemonize
+ignore-empty-password
+show-failed-attempts
+
+# Appearance
+color=212121
+font=Fantasque Sans Mono
+font-size=64
+
+# Inside circle (idle state) - transparent
+inside-color=21212100
+inside-clear-color=21212100
+inside-caps-lock-color=21212100
+inside-ver-color=21212100
+inside-wrong-color=21212100
+
+# Ring colors
+ring-color=82aaff
+ring-clear-color=89ddff
+ring-caps-lock-color=ffcb6b
+ring-ver-color=c792ea
+ring-wrong-color=ff5370
+
+# Line (between ring and inside) - transparent
+line-color=00000000
+line-clear-color=00000000
+line-caps-lock-color=00000000
+line-ver-color=00000000
+line-wrong-color=00000000
+separator-color=00000000
+
+# Key highlight
+key-hl-color=c3e88d
+bs-hl-color=f78c6c
+caps-lock-key-hl-color=ffcb6b
+caps-lock-bs-hl-color=f78c6c
+
+# Text colors
+text-color=eeffff
+text-clear-color=89ddff
+text-caps-lock-color=ffcb6b
+text-ver-color=c792ea
+text-wrong-color=ff5370
+
+# Layout text
+layout-text-color=b2ccd6
+layout-bg-color=212121
+
+# Indicator
+indicator-radius=200
+indicator-thickness=20
+indicator-caps-lock

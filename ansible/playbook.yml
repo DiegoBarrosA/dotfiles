@@ -1,0 +1,52 @@
+---
+# Dotfiles Deployment Playbook
+# Deploys a Sway-based desktop environment on Ubuntu
+
+- name: Deploy desktop environment
+  hosts: localhost
+  gather_facts: true
+  
+  vars:
+    config_dir: "{{ playbook_dir }}/../configs"
+    
+  tasks:
+    - name: Ensure we're running on a supported system
+      ansible.builtin.assert:
+        that:
+          - ansible_os_family == "Debian"
+        fail_msg: "This playbook is designed for Debian/Ubuntu systems"
+      tags: [always]
+
+  roles:
+    - role: packages
+      tags: [packages]
+    - role: fonts
+      tags: [fonts, config]
+    - role: gtk
+      tags: [gtk, config]
+    - role: sway
+      tags: [sway, config]
+    - role: waybar
+      tags: [waybar, config]
+    - role: alacritty
+      tags: [alacritty, config]
+    - role: mako
+      tags: [mako, config]
+    - role: fuzzel
+      tags: [fuzzel, config]
+    - role: swaylock
+      tags: [swaylock, config]
+
+  post_tasks:
+    - name: Display completion message
+      ansible.builtin.debug:
+        msg: |
+          Desktop environment deployed successfully!
+          
+          To start using sway:
+          1. Log out of your current session
+          2. Select 'Sway' from your display manager
+          3. Or run 'sway' from a TTY
+          
+          Note: You may need to log out and back in for all changes to take effect.
+      tags: [always]

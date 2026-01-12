@@ -1,0 +1,83 @@
+---
+# GTK theming role
+
+- name: Create GTK-3.0 config directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/gtk-3.0"
+    state: directory
+    mode: '0755'
+  tags: [gtk, config]
+
+- name: Deploy GTK-3.0 settings
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../configs/gtk-3.0/settings.ini"
+    dest: "{{ user_home }}/.config/gtk-3.0/settings.ini"
+    mode: '0644'
+  tags: [gtk, config]
+
+- name: Create GTK-4.0 config directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/gtk-4.0"
+    state: directory
+    mode: '0755'
+  tags: [gtk, config]
+
+- name: Deploy GTK-4.0 settings (symlink to GTK-3.0)
+  ansible.builtin.file:
+    src: "{{ user_home }}/.config/gtk-3.0/settings.ini"
+    dest: "{{ user_home }}/.config/gtk-4.0/settings.ini"
+    state: link
+    force: true
+  tags: [gtk, config]
+
+- name: Set GTK theme via dconf
+  ansible.builtin.command:
+    cmd: "dconf write /org/gnome/desktop/interface/gtk-theme \"'Adwaita-dark'\""
+  changed_when: false
+  tags: [gtk, config]
+
+- name: Set icon theme via dconf
+  ansible.builtin.command:
+    cmd: "dconf write /org/gnome/desktop/interface/icon-theme \"'Papirus-Dark'\""
+  changed_when: false
+  tags: [gtk, config]
+
+- name: Set cursor theme via dconf
+  ansible.builtin.command:
+    cmd: "dconf write /org/gnome/desktop/interface/cursor-theme \"'phinger-cursors-dark'\""
+  changed_when: false
+  tags: [gtk, config]
+
+- name: Set cursor size via dconf
+  ansible.builtin.command:
+    cmd: "dconf write /org/gnome/desktop/interface/cursor-size 24"
+  changed_when: false
+  tags: [gtk, config]
+
+- name: Set color scheme to prefer dark
+  ansible.builtin.command:
+    cmd: "dconf write /org/gnome/desktop/interface/color-scheme \"'prefer-dark'\""
+  changed_when: false
+  tags: [gtk, config]
+
+- name: Set font via dconf
+  ansible.builtin.command:
+    cmd: "dconf write /org/gnome/desktop/interface/font-name \"'Cantarell 13'\""
+  changed_when: false
+  tags: [gtk, config]
+
+- name: Create legacy .icons directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.icons"
+    state: directory
+    mode: '0755'
+  tags: [gtk, config]
+
+- name: Symlink cursor theme to .icons for legacy apps
+  ansible.builtin.file:
+    src: "{{ user_home }}/.local/share/icons/phinger-cursors-dark"
+    dest: "{{ user_home }}/.icons/phinger-cursors-dark"
+    state: link
+    force: true
+  ignore_errors: true
+  tags: [gtk, config]

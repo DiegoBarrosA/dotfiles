@@ -1,0 +1,121 @@
+---
+# Font installation role
+
+- name: Install font packages from apt
+  become: true
+  ansible.builtin.apt:
+    name:
+      - fonts-cantarell
+      - fonts-dejavu
+      - fonts-noto-color-emoji
+      - fonts-font-awesome
+    state: present
+  tags: [fonts, packages]
+
+- name: Create local fonts directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.local/share/fonts"
+    state: directory
+    mode: '0755'
+  tags: [fonts, config]
+
+- name: Check if Fantasque Sans Mono is installed
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.local/share/fonts/FantasqueSansMono-Regular.ttf"
+  register: fantasque_font
+  tags: [fonts, config]
+
+- name: Download Fantasque Sans Mono
+  when: not fantasque_font.stat.exists
+  block:
+    - name: Create temp directory for font download
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: fonts
+      register: font_temp_dir
+      
+    - name: Download Fantasque Sans Mono
+      ansible.builtin.get_url:
+        url: "https://github.com/belluzj/fantasque-sans/releases/download/v1.8.0/FantasqueSansMono-Normal.zip"
+        dest: "{{ font_temp_dir.path }}/fantasque.zip"
+        mode: '0644'
+        
+    - name: Extract Fantasque Sans Mono
+      ansible.builtin.unarchive:
+        src: "{{ font_temp_dir.path }}/fantasque.zip"
+        dest: "{{ font_temp_dir.path }}"
+        remote_src: true
+        
+    - name: Copy Fantasque Sans Mono TTF files
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ user_home }}/.local/share/fonts/"
+        mode: '0644'
+        remote_src: true
+      with_fileglob:
+        - "{{ font_temp_dir.path }}/TTF/*.ttf"
+        
+    - name: Clean up temp directory
+      ansible.builtin.file:
+        path: "{{ font_temp_dir.path }}"
+        state: absent
+  tags: [fonts, config]
+
+- name: Check if phinger-cursors is installed
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.local/share/icons/phinger-cursors-dark"
+  register: phinger_cursors
+  tags: [fonts, config]
+
+- name: Download and install phinger-cursors
+  when: not phinger_cursors.stat.exists
+  block:
+    - name: Create icons directory
+      ansible.builtin.file:
+        path: "{{ user_home }}/.local/share/icons"
+        state: directory
+        mode: '0755'
+        
+    - name: Create temp directory for cursor download
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: cursors
+      register: cursor_temp_dir
+      
+    - name: Download phinger-cursors
+      ansible.builtin.get_url:
+        url: "https://github.com/phisch/phinger-cursors/releases/download/v2.0/phinger-cursors-variants.tar.bz2"
+        dest: "{{ cursor_temp_dir.path }}/phinger-cursors.tar.bz2"
+        mode: '0644'
+        
+    - name: Extract phinger-cursors
+      ansible.builtin.unarchive:
+        src: "{{ cursor_temp_dir.path }}/phinger-cursors.tar.bz2"
+        dest: "{{ cursor_temp_dir.path }}"
+        remote_src: true
+        
+    - name: Copy phinger-cursors themes
+      ansible.builtin.copy:
+        src: "{{ cursor_temp_dir.path }}/phinger-cursors-dark"
+        dest: "{{ user_home }}/.local/share/icons/"
+        mode: '0755'
+        remote_src: true
+        
+    - name: Copy phinger-cursors light theme
+      ansible.builtin.copy:
+        src: "{{ cursor_temp_dir.path }}/phinger-cursors-light"
+        dest: "{{ user_home }}/.local/share/icons/"
+        mode: '0755'
+        remote_src: true
+        
+    - name: Clean up temp directory
+      ansible.builtin.file:
+        path: "{{ cursor_temp_dir.path }}"
+        state: absent
+  tags: [fonts, config]
+
+- name: Update font cache
+  ansible.builtin.command:
+    cmd: fc-cache -fv
+  changed_when: false
+  tags: [fonts, config]

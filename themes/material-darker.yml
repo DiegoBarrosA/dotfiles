@@ -1,0 +1,37 @@
+# Material Darker Base16 Theme
+# These values are used by Ansible templates for consistent theming
+
+name: "Material Darker"
+
+colors:
+  base00: "212121"  # Background
+  base01: "303030"  # Lighter background
+  base02: "353535"  # Selection background
+  base03: "4a4a4a"  # Comments, invisibles
+  base04: "b2ccd6"  # Dark foreground
+  base05: "eeffff"  # Default foreground
+  base06: "eeffff"  # Light foreground
+  base07: "ffffff"  # Light background
+  base08: "f07178"  # Red - variables, errors
+  base09: "f78c6c"  # Orange - integers, constants
+  base0A: "ffcb6b"  # Yellow - classes, warnings
+  base0B: "c3e88d"  # Green - strings, success
+  base0C: "89ddff"  # Cyan - support, regex
+  base0D: "82aaff"  # Blue - functions, accent
+  base0E: "c792ea"  # Magenta - keywords, storage
+  base0F: "ff5370"  # Brown - deprecated, dark red
+
+fonts:
+  monospace: "Fantasque Sans Mono"
+  sans_serif: "Cantarell"
+  serif: "DejaVu Serif"
+  
+  sizes:
+    terminal: 20
+    desktop: 18
+    applications: 13
+    popups: 11
+
+cursor:
+  name: "phinger-cursors-dark"
+  size: 24

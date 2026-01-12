@@ -1,0 +1,107 @@
+# Alacritty Configuration - Material Darker Theme
+
+[general]
+# Enable IPC socket for server/client mode
+ipc_socket = true
+# Live config reload
+live_config_reload = true
+
+[terminal.shell]
+program = "/usr/bin/fish"
+args = ["--login"]
+
+[window]
+opacity = 1.0
+dynamic_padding = true
+
+[window.padding]
+x = 15
+y = 15
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[font]
+size = 20
+
+[font.normal]
+family = "Fantasque Sans Mono"
+style = "Regular"
+
+[font.bold]
+family = "Fantasque Sans Mono"
+style = "Bold"
+
+[font.italic]
+family = "Fantasque Sans Mono"
+style = "Italic"
+
+[font.bold_italic]
+family = "Fantasque Sans Mono"
+style = "Bold Italic"
+
+[cursor.style]
+shape = "Beam"
+blinking = "On"
+
+[cursor]
+blink_interval = 500
+
+[mouse]
+hide_when_typing = true
+
+[selection]
+save_to_clipboard = true
+
+# Material Darker colors
+[colors.primary]
+background = "#212121"
+foreground = "#eeffff"
+
+[colors.cursor]
+text = "#212121"
+cursor = "#eeffff"
+
+[colors.vi_mode_cursor]
+text = "#212121"
+cursor = "#82aaff"
+
+[colors.selection]
+text = "#212121"
+background = "#82aaff"
+
+[colors.normal]
+black = "#212121"
+red = "#f07178"
+green = "#c3e88d"
+yellow = "#ffcb6b"
+blue = "#82aaff"
+magenta = "#c792ea"
+cyan = "#89ddff"
+white = "#eeffff"
+
+[colors.bright]
+black = "#4a4a4a"
+red = "#f07178"
+green = "#c3e88d"
+yellow = "#ffcb6b"
+blue = "#82aaff"
+magenta = "#c792ea"
+cyan = "#89ddff"
+white = "#ffffff"
+
+[colors.dim]
+black = "#303030"
+red = "#f07178"
+green = "#c3e88d"
+yellow = "#ffcb6b"
+blue = "#82aaff"
+magenta = "#c792ea"
+cyan = "#89ddff"
+white = "#b2ccd6"
+
+[[keyboard.bindings]]
+key = "F"
+mods = "Command|Shift"
+action = "ToggleFullscreen"

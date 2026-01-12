@@ -1,0 +1,16 @@
+---
+# Fuzzel application launcher configuration role
+
+- name: Create fuzzel config directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/fuzzel"
+    state: directory
+    mode: '0755'
+  tags: [fuzzel, config]
+
+- name: Deploy fuzzel config
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../configs/fuzzel/fuzzel.ini"
+    dest: "{{ user_home }}/.config/fuzzel/fuzzel.ini"
+    mode: '0644'
+  tags: [fuzzel, config]
