@@ -8,7 +8,8 @@
       - fonts-cantarell
       - fonts-dejavu
       - fonts-noto-color-emoji
-      - fonts-font-awesome
+      - fonts-noto-cjk
+      - fonts-noto-cjk-extra
     state: present
   tags: [fonts, packages]
 
@@ -58,6 +59,45 @@
     - name: Clean up temp directory
       ansible.builtin.file:
         path: "{{ font_temp_dir.path }}"
+        state: absent
+  tags: [fonts, config]
+
+- name: Check if Font Awesome 7 is installed
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.local/share/fonts/Font Awesome 7 Free-Solid-900.otf"
+  register: fontawesome_installed
+  tags: [fonts, config]
+
+- name: Download and install Font Awesome 7
+  when: not fontawesome_installed.stat.exists
+  block:
+    - name: Create temp directory for Font Awesome download
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: fontawesome
+      register: fa_temp_dir
+
+    - name: Download Font Awesome 7 Free
+      ansible.builtin.get_url:
+        url: "https://github.com/FortAwesome/Font-Awesome/releases/download/7.1.0/fontawesome-free-7.1.0-desktop.zip"
+        dest: "{{ fa_temp_dir.path }}/fontawesome.zip"
+        mode: '0644'
+
+    - name: Extract Font Awesome
+      ansible.builtin.unarchive:
+        src: "{{ fa_temp_dir.path }}/fontawesome.zip"
+        dest: "{{ fa_temp_dir.path }}"
+        remote_src: true
+
+    - name: Copy Font Awesome OTF files
+      ansible.builtin.shell: |
+        cp "{{ fa_temp_dir.path }}"/fontawesome-free-*/otfs/*.otf "{{ user_home }}/.local/share/fonts/"
+      args:
+        executable: /bin/bash
+
+    - name: Clean up Font Awesome temp directory
+      ansible.builtin.file:
+        path: "{{ fa_temp_dir.path }}"
         state: absent
   tags: [fonts, config]
 

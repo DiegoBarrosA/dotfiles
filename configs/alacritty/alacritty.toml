@@ -1,14 +1,13 @@
 # Alacritty Configuration - Material Darker Theme
 
-[general]
 # Enable IPC socket for server/client mode
 ipc_socket = true
 # Live config reload
 live_config_reload = true
 
-[terminal.shell]
-program = "/usr/bin/fish"
-args = ["--login"]
+[shell]
+program = "/home/diego/.nix-profile/bin/nu"
+args = [""]
 
 [window]
 opacity = 1.0

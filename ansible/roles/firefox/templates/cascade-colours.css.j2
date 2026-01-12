@@ -1,0 +1,66 @@
+/* Cascade Color Overrides - Material Darker Theme
+ * Managed by Ansible - Do not edit directly
+ * 
+ * This file overrides Cascade's default colors with Material Darker palette
+ */
+
+:root {
+  /* Base colors */
+  --uc-base-colour: #{{ theme.colors.base00 }};
+  --uc-highlight-colour: #{{ theme.colors.base01 }};
+  --uc-inverted-colour: #{{ theme.colors.base05 }};
+  --uc-muted-colour: #{{ theme.colors.base04 }};
+  --uc-accent-colour: #{{ theme.colors.base0D }};
+  
+  /* Extended palette for Cascade */
+  --uc-background-primary: #{{ theme.colors.base00 }};
+  --uc-background-secondary: #{{ theme.colors.base01 }};
+  --uc-background-tertiary: #{{ theme.colors.base02 }};
+  
+  --uc-text-primary: #{{ theme.colors.base05 }};
+  --uc-text-secondary: #{{ theme.colors.base04 }};
+  --uc-text-muted: #{{ theme.colors.base03 }};
+  
+  /* Accent colors */
+  --uc-accent-primary: #{{ theme.colors.base0D }};
+  --uc-accent-secondary: #{{ theme.colors.base0C }};
+  --uc-accent-tertiary: #{{ theme.colors.base0E }};
+  
+  /* Semantic colors */
+  --uc-success-colour: #{{ theme.colors.base0B }};
+  --uc-warning-colour: #{{ theme.colors.base0A }};
+  --uc-error-colour: #{{ theme.colors.base08 }};
+  --uc-info-colour: #{{ theme.colors.base0C }};
+  
+  /* UI specific */
+  --uc-border-colour: #{{ theme.colors.base02 }};
+  --uc-hover-colour: #{{ theme.colors.base01 }};
+  --uc-active-colour: #{{ theme.colors.base02 }};
+  
+  /* Tab colors */
+  --tab-selected-bgcolor: #{{ theme.colors.base01 }} !important;
+  --tab-selected-textcolor: #{{ theme.colors.base05 }} !important;
+  --toolbar-bgcolor: #{{ theme.colors.base00 }} !important;
+  --toolbar-color: #{{ theme.colors.base05 }} !important;
+  
+  /* URL bar */
+  --urlbar-box-bgcolor: #{{ theme.colors.base01 }} !important;
+  --urlbar-box-hover-bgcolor: #{{ theme.colors.base02 }} !important;
+  --urlbar-box-active-bgcolor: #{{ theme.colors.base02 }} !important;
+  --urlbar-box-text-color: #{{ theme.colors.base05 }} !important;
+  
+  /* Sidebar */
+  --sidebar-background-color: #{{ theme.colors.base00 }} !important;
+  --sidebar-text-color: #{{ theme.colors.base05 }} !important;
+}
+
+/* Dark mode specific overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --uc-base-colour: #{{ theme.colors.base00 }};
+    --uc-highlight-colour: #{{ theme.colors.base01 }};
+    --uc-inverted-colour: #{{ theme.colors.base05 }};
+    --uc-muted-colour: #{{ theme.colors.base04 }};
+    --uc-accent-colour: #{{ theme.colors.base0D }};
+  }
+}

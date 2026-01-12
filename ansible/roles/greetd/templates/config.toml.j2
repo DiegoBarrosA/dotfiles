@@ -1,0 +1,11 @@
+# greetd configuration
+# Managed by Ansible - Do not edit directly
+
+[terminal]
+vt = 1
+
+[default_session]
+# tuigreet with Material Darker theme
+# Theme components: text, time, container, border, title, greet, prompt, input, action, button
+command = "tuigreet --remember --remember-session --time --asterisks --cmd sway --theme 'container={{ theme.colors.base00 }};border={{ theme.colors.base0D }};text={{ theme.colors.base05 }};prompt={{ theme.colors.base0D }};time={{ theme.colors.base04 }};action={{ theme.colors.base0C }};button={{ theme.colors.base0D }};input={{ theme.colors.base05 }}'"
+user = "greeter"

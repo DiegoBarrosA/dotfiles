@@ -1,0 +1,130 @@
+---
+# greetd role - Install and configure greetd with tuigreet
+
+- name: Install greetd
+  become: true
+  ansible.builtin.apt:
+    name: greetd
+    state: present
+  tags: [greetd]
+
+- name: Check if tuigreet is installed
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.cargo/bin/tuigreet"
+  register: tuigreet_installed
+  tags: [greetd]
+
+- name: Install tuigreet from git
+  ansible.builtin.command:
+    cmd: cargo install --git https://github.com/apognu/tuigreet
+    creates: "{{ user_home }}/.cargo/bin/tuigreet"
+  environment:
+    PATH: "{{ user_home }}/.cargo/bin:{{ ansible_env.PATH }}"
+  when: not tuigreet_installed.stat.exists
+  tags: [greetd]
+
+- name: Copy tuigreet to /usr/local/bin (greeter user needs access)
+  become: true
+  ansible.builtin.copy:
+    src: "{{ user_home }}/.cargo/bin/tuigreet"
+    dest: /usr/local/bin/tuigreet
+    mode: '0755'
+    remote_src: true
+  tags: [greetd]
+
+- name: Ensure greetd config directory exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/greetd
+    state: directory
+    mode: '0755'
+  tags: [greetd]
+
+- name: Deploy greetd configuration
+  become: true
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: /etc/greetd/config.toml
+    owner: root
+    group: root
+    mode: '0644'
+  tags: [greetd]
+
+- name: Create greeter user if not exists
+  become: true
+  ansible.builtin.user:
+    name: greeter
+    system: true
+    shell: /usr/sbin/nologin
+    home: /var/lib/greeter
+    create_home: true
+  tags: [greetd]
+
+- name: Add greeter user to video group
+  become: true
+  ansible.builtin.user:
+    name: greeter
+    groups: video
+    append: true
+  tags: [greetd]
+
+- name: Create greeter cache directory
+  become: true
+  ansible.builtin.file:
+    path: /var/cache/tuigreet
+    state: directory
+    owner: greeter
+    group: greeter
+    mode: '0755'
+  tags: [greetd]
+
+- name: Stop and disable gdm if running
+  become: true
+  ansible.builtin.systemd:
+    name: gdm
+    state: stopped
+    enabled: false
+  ignore_errors: true
+  tags: [greetd]
+
+- name: Stop and disable sddm if running
+  become: true
+  ansible.builtin.systemd:
+    name: sddm
+    state: stopped
+    enabled: false
+  ignore_errors: true
+  tags: [greetd]
+
+- name: Stop and disable lightdm if running
+  become: true
+  ansible.builtin.systemd:
+    name: lightdm
+    state: stopped
+    enabled: false
+  ignore_errors: true
+  tags: [greetd]
+
+- name: Disable getty on tty1 (greetd will use it)
+  become: true
+  ansible.builtin.systemd:
+    name: getty@tty1.service
+    enabled: false
+    state: stopped
+  ignore_errors: true
+  tags: [greetd]
+
+- name: Enable greetd service
+  become: true
+  ansible.builtin.systemd:
+    name: greetd
+    enabled: true
+  tags: [greetd]
+
+- name: Display greetd activation notice
+  ansible.builtin.debug:
+    msg: |
+      greetd has been configured and enabled.
+      It will become active on next reboot.
+      To start it now (will end current session): sudo systemctl start greetd
+  tags: [greetd]

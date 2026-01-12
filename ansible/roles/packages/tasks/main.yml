@@ -1,6 +1,76 @@
 ---
 # Package installation role
 
+# Remove snap packages and snapd
+- name: Remove all snap packages (iteratively to handle dependencies)
+  become: true
+  ansible.builtin.shell: |
+    set -e
+    max_attempts=10
+    attempt=0
+    while snap list 2>/dev/null | grep -v "^Name" | grep -q .; do
+      attempt=$((attempt + 1))
+      if [ $attempt -gt $max_attempts ]; then
+        echo "Max attempts reached, some snaps may remain"
+        exit 0
+      fi
+      for snap in $(snap list 2>/dev/null | awk 'NR>1 {print $1}'); do
+        snap remove --purge "$snap" 2>/dev/null || true
+      done
+    done
+    echo "All snaps removed"
+  args:
+    executable: /bin/bash
+  register: snap_removal
+  changed_when: "'All snaps removed' in snap_removal.stdout"
+  failed_when: false
+  tags: [packages, snap]
+
+- name: Stop and disable snapd services
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  loop:
+    - snapd.service
+    - snapd.socket
+    - snapd.seeded.service
+  ignore_errors: true
+  tags: [packages, snap]
+
+- name: Remove snapd package
+  become: true
+  ansible.builtin.apt:
+    name: snapd
+    state: absent
+    purge: true
+  tags: [packages, snap]
+
+- name: Remove snap directories
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /snap
+    - /var/snap
+    - /var/lib/snapd
+    - /var/cache/snapd
+    - "{{ user_home }}/snap"
+  tags: [packages, snap]
+
+- name: Prevent snapd from being reinstalled
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/nosnap.pref
+    content: |
+      Package: snapd
+      Pin: release a=*
+      Pin-Priority: -10
+    mode: '0644'
+  tags: [packages, snap]
+
 - name: Update apt cache
   become: true
   ansible.builtin.apt:
@@ -38,6 +108,14 @@
   ansible.builtin.apt:
     name:
       - alacritty
+    state: present
+  tags: [packages]
+
+- name: Install file manager
+  become: true
+  ansible.builtin.apt:
+    name:
+      - pcmanfm
     state: present
   tags: [packages]
 
@@ -81,6 +159,17 @@
     state: present
   tags: [packages]
 
+- name: Install build dependencies for cargo packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - pkg-config
+      - libssl-dev
+      - libdbus-1-dev
+    state: present
+  tags: [packages]
+
 - name: Install GTK theming packages
   become: true
   ansible.builtin.apt:
@@ -99,6 +188,34 @@
     append: true
   tags: [packages]
 
+# Rust/Cargo installation for building tools
+- name: Check if cargo is installed
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.cargo/bin/cargo"
+  register: cargo_installed
+  tags: [packages, rust]
+
+- name: Download rustup installer
+  ansible.builtin.get_url:
+    url: https://sh.rustup.rs
+    dest: /tmp/rustup.sh
+    mode: '0755'
+  when: not cargo_installed.stat.exists
+  tags: [packages, rust]
+
+- name: Install Rust via rustup
+  ansible.builtin.command:
+    cmd: /tmp/rustup.sh -y --no-modify-path
+  when: not cargo_installed.stat.exists
+  tags: [packages, rust]
+
+- name: Clean up rustup installer
+  ansible.builtin.file:
+    path: /tmp/rustup.sh
+    state: absent
+  when: not cargo_installed.stat.exists
+  tags: [packages, rust]
+
 - name: Install swayr from cargo (window switcher)
   ansible.builtin.command:
     cmd: cargo install swayr
@@ -108,10 +225,10 @@
   ignore_errors: true
   tags: [packages]
 
-- name: Install autotiling-rs from cargo
+- name: Install autotiling from git
   ansible.builtin.command:
-    cmd: cargo install autotiling-rs
-    creates: "{{ user_home }}/.cargo/bin/autotiling"
+    cmd: cargo install --git https://github.com/ammgws/autotiling-rs
+    creates: "{{ user_home }}/.cargo/bin/autotiling-rs"
   environment:
     PATH: "{{ user_home }}/.cargo/bin:{{ ansible_env.PATH }}"
   ignore_errors: true

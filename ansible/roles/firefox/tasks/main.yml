@@ -1,0 +1,138 @@
+---
+# Firefox role - Install from Mozilla PPA with Cascade theme
+
+- name: Install required packages for PPA
+  become: true
+  ansible.builtin.apt:
+    name:
+      - software-properties-common
+      - apt-transport-https
+      - wget
+      - git
+    state: present
+  tags: [firefox]
+
+- name: Download Mozilla APT repository signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://packages.mozilla.org/apt/repo-signing-key.gpg
+    dest: /etc/apt/keyrings/packages.mozilla.org.asc
+    mode: '0644'
+  tags: [firefox]
+
+- name: Add Mozilla APT repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main"
+    filename: mozilla
+    state: present
+  tags: [firefox]
+
+- name: Set Mozilla APT repository priority
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/mozilla
+    content: |
+      Package: *
+      Pin: origin packages.mozilla.org
+      Pin-Priority: 1000
+    mode: '0644'
+  tags: [firefox]
+
+- name: Update apt cache after adding Mozilla repo
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+  tags: [firefox]
+
+- name: Install Firefox from Mozilla PPA
+  become: true
+  ansible.builtin.apt:
+    name: firefox
+    state: present
+  tags: [firefox]
+
+# CSS Theming Support with Cascade
+- name: Ensure Firefox profile directory exists
+  ansible.builtin.file:
+    path: "{{ user_home }}/.mozilla/firefox"
+    state: directory
+    mode: '0700'
+  tags: [firefox]
+
+- name: Check for existing Firefox profiles
+  ansible.builtin.find:
+    paths: "{{ user_home }}/.mozilla/firefox"
+    patterns: "*.default*"
+    file_type: directory
+  register: firefox_profiles
+  tags: [firefox]
+
+- name: Create default Firefox profile if none exists
+  ansible.builtin.command:
+    cmd: firefox --headless --createprofile "default"
+  when: firefox_profiles.files | length == 0
+  tags: [firefox]
+
+- name: Re-check Firefox profiles after creation
+  ansible.builtin.find:
+    paths: "{{ user_home }}/.mozilla/firefox"
+    patterns: "*.default*"
+    file_type: directory
+  register: firefox_profiles
+  tags: [firefox]
+
+- name: Ensure chrome directory exists in Firefox profile
+  ansible.builtin.file:
+    path: "{{ item.path }}/chrome"
+    state: directory
+    mode: '0755'
+  loop: "{{ firefox_profiles.files }}"
+  tags: [firefox]
+
+- name: Clone Cascade Firefox theme
+  ansible.builtin.git:
+    repo: https://github.com/cascadefox/cascade.git
+    dest: "{{ user_home }}/.cache/cascade-firefox"
+    version: main
+    force: true
+  tags: [firefox]
+
+- name: Copy Cascade chrome files to Firefox profile
+  ansible.builtin.shell: |
+    cp -r "{{ user_home }}/.cache/cascade-firefox/chrome/"* "{{ item.path }}/chrome/"
+    chmod -R u+rwX "{{ item.path }}/chrome/"
+  args:
+    executable: /bin/bash
+  loop: "{{ firefox_profiles.files }}"
+  tags: [firefox]
+
+- name: Deploy Material Darker color overrides for Cascade
+  ansible.builtin.template:
+    src: cascade-colours.css.j2
+    dest: "{{ item.path }}/chrome/includes/cascade-colours.css"
+    mode: '0644'
+  loop: "{{ firefox_profiles.files }}"
+  tags: [firefox]
+
+- name: Enable userChrome.css support in user.js
+  ansible.builtin.blockinfile:
+    path: "{{ item.path }}/user.js"
+    create: true
+    mode: '0644'
+    marker: "// {mark} ANSIBLE MANAGED - CSS Theming Support"
+    block: |
+      // Enable userChrome.css and userContent.css
+      user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
+      
+      // Additional useful preferences for Cascade theme
+      user_pref("svg.context-properties.content.enabled", true);
+      user_pref("layout.css.color-mix.enabled", true);
+      user_pref("layout.css.has-selector.enabled", true);
+      user_pref("widget.gtk.rounded-bottom-corners.enabled", true);
+      
+      // Cascade recommended settings
+      user_pref("browser.tabs.tabMinWidth", 100);
+      user_pref("browser.tabs.tabClipWidth", 90);
+  loop: "{{ firefox_profiles.files }}"
+  tags: [firefox]

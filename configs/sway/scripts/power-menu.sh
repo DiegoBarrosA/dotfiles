@@ -3,7 +3,7 @@
 # Power menu using fuzzel
 #
 
-OPTIONS=" Lock\n Logout\n Suspend\n Reboot\n Shutdown"
+OPTIONS=" Lock\n Logout\n Suspend\n Reboot\n Shutdown"
 
 CHOICE=$(echo -e "$OPTIONS" | fuzzel --dmenu --prompt "Power: ")
 

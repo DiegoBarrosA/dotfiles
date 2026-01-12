@@ -16,10 +16,12 @@
             "2": "二",
             "3": "三",
             "4": "四",
-            "5": "",
-            "6": "",
-            "7": "",
-            "8": "",
+            "5": "\ue007",
+            "6": "\uf121",
+            "7": "\uf07b",
+            "8": "\uf5ad",
+            "9": "九",
+            "10": "十",
             "urgent": "急"
         },
         "persistent-workspaces": {
@@ -33,10 +35,11 @@
     },
 
     "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
+        "format": "\uf5fd <span style=\"italic\">{}</span>"
     },
 
     "sway/window": {
+        "format": "{}",
         "max-length": 50
     },
 
@@ -45,8 +48,13 @@
         "spacing": 10
     },
 
+    "sway/language": {
+        "format": "{short}",
+        "tooltip-format": "{long}"
+    },
+
     "clock": {
-        "format": "{:%A %b %d %Y  %H:%M}",
+        "format": " {:%A %b %d %Y  %H:%M}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "month",
@@ -62,19 +70,19 @@
     },
 
     "cpu": {
-        "format": " {usage}%",
+        "format": "\uf2db {usage}%",
         "tooltip": true,
         "interval": 2
     },
 
     "memory": {
-        "format": " {}%",
+        "format": "\uf538 {}%",
         "tooltip-format": "{used:0.1f}G / {total:0.1f}G"
     },
 
     "backlight": {
         "format": "{icon} {percent}%",
-        "format-icons": [""]
+        "format-icons": ["\uf185"]
     },
 
     "battery": {
@@ -83,26 +91,26 @@
             "critical": 15
         },
         "format": "{icon}",
-        "format-charging": "",
-        "format-plugged": "",
-        "format-icons": ["", "", "", "", ""]
+        "format-charging": "\uf0e7",
+        "format-plugged": "\uf1e6",
+        "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"]
     },
 
     "network": {
-        "format-wifi": "",
-        "format-ethernet": " {ipaddr}",
-        "format-disconnected": " Disconnected",
+        "format-wifi": "\uf1eb",
+        "format-ethernet": "\uf796 {ipaddr}",
+        "format-disconnected": "\uf127 Disconnected",
         "tooltip-format-wifi": "{essid} ({signalStrength}%)",
         "tooltip-format-ethernet": "{ifname}: {ipaddr}/{cidr}"
     },
 
     "pulseaudio": {
         "format": "{icon}",
-        "format-bluetooth": "",
-        "format-muted": " muted",
+        "format-bluetooth": "\uf294",
+        "format-muted": "\uf6a9 muted",
         "format-icons": {
-            "headphone": "",
-            "default": ["", "", ""]
+            "headphone": "\uf025",
+            "default": ["\uf026", "\uf027", "\uf028"]
         },
         "on-click": "pavucontrol"
     }

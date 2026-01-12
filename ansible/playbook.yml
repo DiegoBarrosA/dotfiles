@@ -8,6 +8,7 @@
   
   vars:
     config_dir: "{{ playbook_dir }}/../configs"
+    theme: "{{ lookup('file', playbook_dir + '/../themes/material-darker.yml') | from_yaml }}"
     
   tasks:
     - name: Ensure we're running on a supported system
@@ -36,6 +37,10 @@
       tags: [fuzzel, config]
     - role: swaylock
       tags: [swaylock, config]
+    - role: firefox
+      tags: [firefox, config]
+    - role: greetd
+      tags: [greetd, config]
 
   post_tasks:
     - name: Display completion message
@@ -43,9 +48,12 @@
         msg: |
           Desktop environment deployed successfully!
           
-          To start using sway:
+          greetd has been configured with tuigreet as the display manager.
+          On next reboot, you will be greeted by tuigreet.
+          
+          To start using sway immediately:
           1. Log out of your current session
-          2. Select 'Sway' from your display manager
+          2. Select 'Sway' from tuigreet
           3. Or run 'sway' from a TTY
           
           Note: You may need to log out and back in for all changes to take effect.

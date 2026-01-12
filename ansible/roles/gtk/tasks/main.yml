@@ -1,5 +1,44 @@
 ---
-# GTK theming role
+# GTK theming role - adw-gtk3 with accent color
+
+- name: Check if adw-gtk3 is installed
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.local/share/themes/adw-gtk3-dark"
+  register: adw_gtk3_installed
+  tags: [gtk, config]
+
+- name: Download and install adw-gtk3
+  when: not adw_gtk3_installed.stat.exists
+  block:
+    - name: Create themes directory
+      ansible.builtin.file:
+        path: "{{ user_home }}/.local/share/themes"
+        state: directory
+        mode: '0755'
+
+    - name: Create temp directory for adw-gtk3
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: adw-gtk3
+      register: adw_temp_dir
+
+    - name: Download adw-gtk3 release
+      ansible.builtin.get_url:
+        url: "https://github.com/lassekongo83/adw-gtk3/releases/download/v6.4/adw-gtk3v6.4.tar.xz"
+        dest: "{{ adw_temp_dir.path }}/adw-gtk3.tar.xz"
+        mode: '0644'
+
+    - name: Extract adw-gtk3
+      ansible.builtin.unarchive:
+        src: "{{ adw_temp_dir.path }}/adw-gtk3.tar.xz"
+        dest: "{{ user_home }}/.local/share/themes/"
+        remote_src: true
+
+    - name: Clean up adw-gtk3 temp directory
+      ansible.builtin.file:
+        path: "{{ adw_temp_dir.path }}"
+        state: absent
+  tags: [gtk, config]
 
 - name: Create GTK-3.0 config directory
   ansible.builtin.file:
@@ -9,8 +48,8 @@
   tags: [gtk, config]
 
 - name: Deploy GTK-3.0 settings
-  ansible.builtin.copy:
-    src: "{{ playbook_dir }}/../configs/gtk-3.0/settings.ini"
+  ansible.builtin.template:
+    src: settings.ini.j2
     dest: "{{ user_home }}/.config/gtk-3.0/settings.ini"
     mode: '0644'
   tags: [gtk, config]
@@ -22,17 +61,30 @@
     mode: '0755'
   tags: [gtk, config]
 
-- name: Deploy GTK-4.0 settings (symlink to GTK-3.0)
-  ansible.builtin.file:
-    src: "{{ user_home }}/.config/gtk-3.0/settings.ini"
+- name: Deploy GTK-4.0 settings
+  ansible.builtin.template:
+    src: settings.ini.j2
     dest: "{{ user_home }}/.config/gtk-4.0/settings.ini"
-    state: link
-    force: true
+    mode: '0644'
+  tags: [gtk, config]
+
+- name: Deploy GTK-3.0 custom CSS for accent color
+  ansible.builtin.template:
+    src: gtk.css.j2
+    dest: "{{ user_home }}/.config/gtk-3.0/gtk.css"
+    mode: '0644'
+  tags: [gtk, config]
+
+- name: Deploy GTK-4.0 custom CSS for accent color
+  ansible.builtin.template:
+    src: gtk.css.j2
+    dest: "{{ user_home }}/.config/gtk-4.0/gtk.css"
+    mode: '0644'
   tags: [gtk, config]
 
 - name: Set GTK theme via dconf
   ansible.builtin.command:
-    cmd: "dconf write /org/gnome/desktop/interface/gtk-theme \"'Adwaita-dark'\""
+    cmd: "dconf write /org/gnome/desktop/interface/gtk-theme \"'adw-gtk3-dark'\""
   changed_when: false
   tags: [gtk, config]
 
@@ -58,6 +110,13 @@
   ansible.builtin.command:
     cmd: "dconf write /org/gnome/desktop/interface/color-scheme \"'prefer-dark'\""
   changed_when: false
+  tags: [gtk, config]
+
+- name: Set accent color via dconf
+  ansible.builtin.command:
+    cmd: "dconf write /org/gnome/desktop/interface/accent-color \"'blue'\""
+  changed_when: false
+  ignore_errors: true
   tags: [gtk, config]
 
 - name: Set font via dconf
