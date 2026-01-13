@@ -5,7 +5,7 @@
     "spacing": 0,
     "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
     "modules-center": [],
-    "modules-right": ["tray", "sway/language", "pulseaudio", "network", "battery", "clock"],
+    "modules-right": ["tray","power-profiles-daemon", "sway/language", "pulseaudio", "network", "battery", "clock"],
 
     "sway/workspaces": {
         "disable-scroll": false,
@@ -113,5 +113,15 @@
             "default": ["\uf026", "\uf027", "\uf028"]
         },
         "on-click": "pavucontrol"
+    },
+
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip-format": "Power profile: {profile}",
+        "format-icons": {
+            "performance": "\uf0e7",
+            "balanced": "\uf24e",
+            "power-saver": "\uf06c"
+        }
     }
 }
