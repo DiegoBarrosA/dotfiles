@@ -1,0 +1,71 @@
+---
+# Alacritty terminal emulator installation role
+# Uses daemon-client model via socket for lower memory footprint
+
+- name: Install Alacritty
+  become: true
+  ansible.builtin.apt:
+    name: alacritty
+    state: present
+    install_recommends: false
+  tags: [alacritty]
+
+- name: Ensure alacritty config directory exists
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/alacritty"
+    state: directory
+    mode: '0755'
+  tags: [alacritty, config]
+
+- name: Deploy Alacritty configuration
+  ansible.builtin.template:
+    src: alacritty.toml.j2
+    dest: "{{ user_home }}/.config/alacritty/alacritty.toml"
+    mode: '0644'
+  tags: [alacritty, config]
+
+- name: Ensure local bin directory exists
+  ansible.builtin.file:
+    path: "{{ user_home }}/.local/bin"
+    state: directory
+    mode: '0755'
+  tags: [alacritty, config]
+
+- name: Create Alacritty daemon-client launcher script
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.local/bin/alacritty-client"
+    mode: '0755'
+    content: |
+      #!/bin/bash
+      # Alacritty daemon-client launcher
+      # Spawns new window in existing instance via socket for lower memory usage
+      
+      SOCKET="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/alacritty.sock"
+      
+      if [ -S "$SOCKET" ]; then
+        # Socket exists, create new window in existing instance
+        alacritty msg --socket "$SOCKET" create-window "$@" 2>/dev/null || \
+          alacritty --socket "$SOCKET" "$@"
+      else
+        # No socket, start new instance with socket
+        alacritty --socket "$SOCKET" "$@"
+      fi
+  tags: [alacritty, config]
+
+- name: Set TERMINAL environment variable in profile
+  ansible.builtin.lineinfile:
+    path: "{{ user_home }}/.profile"
+    regexp: '^export TERMINAL='
+    line: 'export TERMINAL=alacritty-client'
+    create: true
+    mode: '0644'
+  tags: [alacritty, config]
+
+- name: Add local bin to PATH in profile
+  ansible.builtin.lineinfile:
+    path: "{{ user_home }}/.profile"
+    regexp: 'export PATH="\$HOME/\.local/bin:\$PATH"'
+    line: 'export PATH="$HOME/.local/bin:$PATH"'
+    create: true
+    mode: '0644'
+  tags: [alacritty, config]

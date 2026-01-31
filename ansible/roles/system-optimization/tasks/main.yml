@@ -1,0 +1,123 @@
+---
+# System optimization role for laptop performance
+# Includes: zram, sysctl tuning, thermald, boot optimization
+
+# --- ZRAM Compressed Swap ---
+- name: Install zram-tools
+  become: true
+  ansible.builtin.apt:
+    name: zram-tools
+    state: present
+    install_recommends: false
+  tags: [optimization, zram]
+
+- name: Configure zram for compressed swap
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/default/zramswap
+    content: |
+      # zram configuration for laptop
+      ALGO=zstd
+      PERCENT=50
+      PRIORITY=100
+    mode: '0644'
+  notify: Restart zramswap
+  tags: [optimization, zram]
+
+- name: Enable zramswap service
+  become: true
+  ansible.builtin.systemd:
+    name: zramswap
+    enabled: true
+    state: started
+  tags: [optimization, zram]
+
+# --- Sysctl Tuning ---
+- name: Deploy laptop sysctl optimizations
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/99-laptop.conf
+    content: |
+      # Laptop/SSD optimizations
+      
+      # Less aggressive swapping (prefer RAM)
+      vm.swappiness = 10
+      
+      # Better cache retention
+      vm.vfs_cache_pressure = 50
+      
+      # Reduce dirty page writes (better for SSD)
+      vm.dirty_ratio = 10
+      vm.dirty_background_ratio = 5
+      vm.dirty_writeback_centisecs = 1500
+      
+      # Disable NMI watchdog (saves power)
+      kernel.nmi_watchdog = 0
+      
+      # Increase inotify limits
+      fs.inotify.max_user_watches = 524288
+      fs.inotify.max_user_instances = 512
+    mode: '0644'
+  notify: Reload sysctl
+  tags: [optimization, sysctl]
+
+# --- Thermald (Intel only) ---
+- name: Check if CPU is Intel
+  ansible.builtin.set_fact:
+    is_intel_cpu: "{{ 'Intel' in ansible_processor | join(' ') }}"
+  tags: [optimization, thermald]
+
+- name: Install thermald for Intel CPUs
+  become: true
+  ansible.builtin.apt:
+    name: thermald
+    state: present
+    install_recommends: false
+  when: is_intel_cpu
+  tags: [optimization, thermald]
+
+- name: Enable thermald service
+  become: true
+  ansible.builtin.systemd:
+    name: thermald
+    enabled: true
+    state: started
+  when: is_intel_cpu
+  ignore_errors: true
+  tags: [optimization, thermald]
+
+# --- Boot Optimization ---
+- name: Disable unnecessary services for faster boot
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  loop:
+    - ModemManager.service
+    - cups.service
+    - cups-browsed.service
+  ignore_errors: true
+  tags: [optimization, boot]
+
+- name: Mask plymouth for faster boot (optional)
+  become: true
+  ansible.builtin.systemd:
+    name: plymouth-start.service
+    masked: true
+  ignore_errors: true
+  tags: [optimization, boot]
+
+# --- Display optimization status ---
+- name: Display optimization status
+  ansible.builtin.debug:
+    msg: |
+      System optimizations applied:
+      
+      - zram: Compressed swap in RAM (zstd, 50% of RAM)
+      - sysctl: Laptop/SSD tuned parameters
+      - thermald: {{ 'Enabled' if is_intel_cpu else 'Skipped (non-Intel CPU)' }}
+      - Boot: Disabled ModemManager, CUPS
+      
+      Note: Some changes require reboot to take effect.
+  tags: [optimization]

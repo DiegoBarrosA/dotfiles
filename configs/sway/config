@@ -3,7 +3,7 @@
 
 # Variables
 set $mod Mod4
-set $term ghostty
+set $term alacritty-client
 set $menu fuzzel
 
 # Colors (Material Darker)
@@ -67,14 +67,19 @@ input type:touchpad {
 seat * xcursor_theme Bibata-Material-Darker 24
 
 # Workspace assignments
-assign [app_id="microsoft-edge"] 5
-assign [app_id="^msedge-.*jijnmpkkfkjaihbhffejemnpbbglahim.*$"] 10
+assign [app_id="firefox"] 5
+assign [app_id="org.mozilla.firefox"] 5
 assign [app_id="cursor"] 6
 assign [app_id="pcmanfm"] 7
 assign [app_id="obsidian"] 8
+assign [class="Slack"] 9
+assign [app_id="blueman-manager"] 10
 
 # Window rules
-for_window [app_id="flameshot"] border pixel 0, floating enable, fullscreen disable, move absolute position 0 0
+for_window [app_id="pavucontrol"] floating enable
+for_window [app_id="blueman-manager"] floating enable
+for_window [app_id="wdisplays"] floating enable
+for_window [app_id="nm-connection-editor"] floating enable
 
 # Floating modifier
 floating_modifier $mod
@@ -99,9 +104,10 @@ bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
 # Screenshot controls
-bindsym $mod+Shift+s exec flameshot gui
 bindsym Print exec grim - | wl-copy
-bindsym $mod+Shift+a exec grim -g "$(slurp)" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
+bindsym Shift+Print exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+Print exec ~/.config/sway/scripts/screenshot-menu.sh
+bindsym $mod+Shift+r exec wf-recorder -g "$(slurp)" -f ~/Videos/recording-$(date +%Y%m%d-%H%M%S).mp4
 
 # Focus movement
 bindsym $mod+h focus left
@@ -162,11 +168,21 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Launch-or-focus shortcuts
-bindsym $mod+f exec ~/.config/sway/scripts/launch-or-focus.sh microsoft-edge 5 flatpak run com.microsoft.Edge
+bindsym $mod+f exec ~/.config/sway/scripts/launch-or-focus.sh firefox 5 flatpak run org.mozilla.firefox
 bindsym $mod+d workspace number 6
 bindsym $mod+m workspace number 9
 bindsym $mod+e exec ~/.config/sway/scripts/launch-or-focus.sh pcmanfm 7 pcmanfm
 bindsym $mod+n exec ~/.config/sway/scripts/launch-or-focus.sh obsidian 8 obsidian
+
+# Clipboard history (cliphist via Nix)
+bindsym $mod+v exec ~/.config/sway/scripts/clipboard-menu.sh
+bindsym $mod+Shift+v exec cliphist wipe && notify-send "Clipboard" "History cleared"
+
+# System utilities
+bindsym $mod+Shift+n exec $term -e nmtui
+bindsym $mod+Shift+b exec blueman-manager
+bindsym $mod+Shift+d exec wdisplays
+bindsym $mod+Shift+p exec powerprofilesctl launch
 
 # Resize mode
 bindsym $mod+r mode "resize"
@@ -188,14 +204,32 @@ bar {
     swaybar_command waybar
 }
 
-# Lid switch behavior
-bindswitch --reload --locked lid:on exec 'swaylock -f && systemctl suspend'
+# Lid switch behavior (intelligent - checks for external monitors)
+bindswitch --reload --locked lid:on exec ~/.config/sway/scripts/lid-handler.sh
 
 # Startup commands
+# Terminal daemon (socket mode for lower memory)
+exec alacritty --socket $XDG_RUNTIME_DIR/alacritty.sock
+
+# Sway helpers (managed by Nix, run from PATH)
 exec swayr daemon
-exec autotiling
-exec flatpak run --command=/app/bin/edge com.microsoft.Edge --profile-directory='Profile 1' --app-id=jijnmpkkfkjaihbhffejemnpbbglahim --app-url=https://trello.com/
+
+# Display management
+exec kanshi
+
+# Clipboard daemon
+exec wl-paste --watch cliphist store
+
+# Blue light filter (adjust latitude/longitude for your location)
+exec wlsunset -l 40.7 -L -74.0 -t 3400 -T 6500
+
+# Polkit agent (for GUI privilege escalation)
+exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
+
+# Idle management
 exec swayidle -w timeout 300 'swaylock -f' timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' before-sleep 'swaylock -f'
+
+# Environment variables for Wayland/XDG
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway XCURSOR_THEME XCURSOR_SIZE
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XCURSOR_THEME XCURSOR_SIZE DISPLAY SWAYSOCK
 
@@ -203,6 +237,8 @@ exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XCU
 exec_always {
     gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Material-Darker'
     gsettings set org.gnome.desktop.interface cursor-size 24
+    gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 }
 
 # Include system configs

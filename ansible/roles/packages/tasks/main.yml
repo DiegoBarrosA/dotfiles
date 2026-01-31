@@ -122,7 +122,7 @@
     install_recommends: false
   tags: [packages]
 
-# Note: Ghostty is built from source via the ghostty role
+# Note: Terminal (Alacritty) is installed via the alacritty role
 
 - name: Install file manager
   become: true
@@ -156,7 +156,7 @@
     name:
       - grim
       - slurp
-      - flameshot
+      - wf-recorder
     state: present
     install_recommends: false
   tags: [packages]
@@ -167,12 +167,15 @@
     name:
       - pipewire
       - pipewire-pulse
+      - pipewire-alsa
+      - pipewire-jack
       - wireplumber
       - pavucontrol
       - playerctl
+      - easyeffects
     state: present
     install_recommends: false
-  tags: [packages]
+  tags: [packages, audio]
 
 - name: Install brightness control
   become: true
@@ -238,7 +241,6 @@
   become: true
   ansible.builtin.apt:
     name:
-      - jq
       - dconf-cli
       - gsettings-desktop-schemas
     state: present
@@ -276,52 +278,142 @@
     append: true
   tags: [packages]
 
-# Rust/Cargo installation for building tools
-- name: Check if cargo is installed
-  ansible.builtin.stat:
-    path: "{{ user_home }}/.cargo/bin/cargo"
-  register: cargo_installed
-  tags: [packages, rust]
+# Note: CLI tools (swayr, autotiling-rs, jq, etc.) are now managed by Nix home-manager
+# See ~/nix-config for CLI tool configuration
 
-- name: Download rustup installer
-  ansible.builtin.get_url:
-    url: https://sh.rustup.rs
-    dest: /tmp/rustup.sh
-    mode: '0755'
-  when: not cargo_installed.stat.exists
-  tags: [packages, rust]
+# --- Bluetooth ---
+- name: Install Bluetooth packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - bluez
+      - bluez-tools
+      - blueman
+    state: present
+    install_recommends: false
+  tags: [packages, bluetooth]
 
-- name: Install Rust via rustup
-  ansible.builtin.command:
-    cmd: /tmp/rustup.sh -y --no-modify-path
-  when: not cargo_installed.stat.exists
-  tags: [packages, rust]
-
-- name: Clean up rustup installer
-  ansible.builtin.file:
-    path: /tmp/rustup.sh
-    state: absent
-  when: not cargo_installed.stat.exists
-  tags: [packages, rust]
-
-- name: Install swayr from cargo (window switcher)
-  ansible.builtin.command:
-    cmd: cargo install swayr
-    creates: "{{ user_home }}/.cargo/bin/swayr"
-  environment:
-    PATH: "{{ user_home }}/.cargo/bin:{{ ansible_env.PATH }}"
+- name: Enable Bluetooth service
+  become: true
+  ansible.builtin.systemd:
+    name: bluetooth
+    enabled: true
+    state: started
   ignore_errors: true
+  tags: [packages, bluetooth]
+
+- name: Add user to bluetooth group
+  become: true
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    groups: bluetooth
+    append: true
+  ignore_errors: true
+  tags: [packages, bluetooth]
+
+# --- Display Management ---
+- name: Install display management tools
+  become: true
+  ansible.builtin.apt:
+    name:
+      - kanshi
+      - wdisplays
+      - wlr-randr
+    state: present
+    install_recommends: false
+  tags: [packages, display]
+
+# --- Desktop Viewers (GPU accelerated) ---
+- name: Install media viewers
+  become: true
+  ansible.builtin.apt:
+    name:
+      - mpv
+      - imv
+      - zathura
+      - zathura-pdf-poppler
+    state: present
+    install_recommends: false
+  tags: [packages, viewers]
+
+# --- GPU Acceleration ---
+- name: Install GPU acceleration packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - mesa-vulkan-drivers
+      - libva-mesa-driver
+      - vdpau-driver-all
+      - vainfo
+      - vulkan-tools
+    state: present
+    install_recommends: false
+  tags: [packages, gpu]
+
+- name: Check if CPU is Intel for media driver
+  ansible.builtin.set_fact:
+    is_intel: "{{ 'Intel' in ansible_processor | join(' ') }}"
+  tags: [packages, gpu]
+
+- name: Install Intel media driver
+  become: true
+  ansible.builtin.apt:
+    name: intel-media-va-driver-non-free
+    state: present
+    install_recommends: false
+  when: is_intel
+  ignore_errors: true
+  tags: [packages, gpu]
+
+# --- File Manager Enhancements ---
+- name: Install file manager support packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - gvfs
+      - gvfs-backends
+      - tumbler
+      - file-roller
+    state: present
+    install_recommends: false
+  tags: [packages, file-manager]
+
+# --- Blue Light Filter ---
+- name: Install wlsunset for blue light filtering
+  become: true
+  ansible.builtin.apt:
+    name: wlsunset
+    state: present
+    install_recommends: false
   tags: [packages]
 
-- name: Install autotiling from git
-  ansible.builtin.command:
-    cmd: cargo install --git https://github.com/ammgws/autotiling-rs
-    creates: "{{ user_home }}/.cargo/bin/autotiling-rs"
-  environment:
-    PATH: "{{ user_home }}/.cargo/bin:{{ ansible_env.PATH }}"
-  ignore_errors: true
+# --- Polkit Agent ---
+- name: Install polkit agent
+  become: true
+  ansible.builtin.apt:
+    name: policykit-1-gnome
+    state: present
+    install_recommends: false
   tags: [packages]
 
+# --- Touchpad Gestures ---
+- name: Install libinput tools for gestures
+  become: true
+  ansible.builtin.apt:
+    name: libinput-tools
+    state: present
+    install_recommends: false
+  tags: [packages]
+
+- name: Add user to input group (for gestures)
+  become: true
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    groups: input
+    append: true
+  tags: [packages]
+
+# --- Cleanup ---
 - name: Remove automatically installed packages that are no longer needed
   become: true
   ansible.builtin.apt:

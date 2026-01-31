@@ -1,0 +1,426 @@
+/*==============================================================================================*
+  Cascade Theme for Firefox - Material Darker
+  Based on: https://github.com/andreasgrafen/cascade
+  Colors adapted for Material Darker theme via Ansible
+*==============================================================================================*/
+
+/*---+---+---+---+---+---+
+ | G | L | O | B | A | L |
+ +---+---+---+---+---+---*/
+
+:root {
+  --uc-border-radius: 5px;
+  --uc-status-panel-spacing: 12px;
+}
+
+#pageActionButton {
+  display: none !important;
+}
+
+#PanelUI-menu-button {
+  padding: 0px !important;
+}
+
+#PanelUI-menu-button .toolbarbutton-icon {
+  width: 1px !important;
+}
+
+#PanelUI-menu-button .toolbarbutton-badge-stack {
+  padding: 0px !important;
+}
+
+/*---+---+---+---+---+---+---+
+ | T | O | O | L | B | A | R |
+ +---+---+---+---+---+---+---*/
+
+:root {
+  --uc-toolbar-position: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --uc-darken-toolbar: 0.2;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --uc-darken-toolbar: 0;
+  }
+}
+
+/*---+---+---+---+---+---+---+
+ | U | R | L | — | B | A | R |
+ +---+---+---+---+---+---+---*/
+
+:root {
+  --uc-urlbar-min-width: 35vw;
+  --uc-urlbar-max-width: 35vw;
+  --uc-urlbar-position: 1;
+  --uc-urlbar-top-spacing: 1px;
+}
+
+#back-button,
+#forward-button {
+  display: none !important;
+}
+
+#identity-permission-box {
+  display: none !important;
+}
+
+#urlbar-go-button {
+  display: none !important;
+}
+
+/*---+---+---+---+---+---+---+
+ | T | A | B | — | B | A | R |
+ +---+---+---+---+---+---+---*/
+
+:root {
+  --uc-active-tab-width: clamp(100px, 30vw, 300px);
+  --uc-inactive-tab-width: clamp(100px, 20vw, 200px);
+  --show-tab-close-button: none;
+  --show-tab-close-button-hover: -moz-inline-block;
+  --uc-show-all-tabs-button: none;
+  --container-tabs-indicator-margin: 10px;
+  --uc-identity-glow: 0 1px 10px 1px;
+}
+
+#sidebar-header {
+  display: none;
+}
+
+.tab-secondary-label {
+  display: none !important;
+}
+
+/*---+---+---+---+---+---+---+
+ | C | O | L | O | U | R | S |
+ +---+---+---+---+---+---+---*/
+
+/* Material Darker Theme Colors */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Container tab colors */
+    --uc-identity-colour-blue: #{{ theme.colors.base0D }};
+    --uc-identity-colour-turquoise: #{{ theme.colors.base0C }};
+    --uc-identity-colour-green: #{{ theme.colors.base0B }};
+    --uc-identity-colour-yellow: #{{ theme.colors.base0A }};
+    --uc-identity-colour-orange: #{{ theme.colors.base09 }};
+    --uc-identity-colour-red: #{{ theme.colors.base08 }};
+    --uc-identity-colour-pink: #{{ theme.colors.base0F }};
+    --uc-identity-colour-purple: #{{ theme.colors.base0E }};
+
+    /* Main color scheme - Material Darker */
+    --uc-base-colour: #{{ theme.colors.base00 }};
+    --uc-highlight-colour: #{{ theme.colors.base01 }};
+    --uc-inverted-colour: #{{ theme.colors.base05 }};
+    --uc-muted-colour: #{{ theme.colors.base04 }};
+    --uc-accent-colour: var(--uc-identity-colour-blue);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --uc-identity-colour-blue: #1D65F5;
+    --uc-identity-colour-turquoise: #209FB5;
+    --uc-identity-colour-green: #40A02B;
+    --uc-identity-colour-yellow: #E49320;
+    --uc-identity-colour-orange: #FE640B;
+    --uc-identity-colour-red: #FC5C65;
+    --uc-identity-colour-pink: #EC83D0;
+    --uc-identity-colour-purple: #822FEE;
+
+    --uc-base-colour: #FAFAFC;
+    --uc-highlight-colour: #DADADC;
+    --uc-inverted-colour: #1E2021;
+    --uc-muted-colour: #191B1C;
+    --uc-accent-colour: var(--uc-identity-colour-purple);
+  }
+}
+
+/* Apply colors to Firefox elements */
+:root {
+  --lwt-frame: var(--uc-base-colour) !important;
+  --lwt-accent-color: var(--lwt-frame) !important;
+  --lwt-text-color: var(--uc-inverted-colour) !important;
+
+  --toolbar-field-color: var(--uc-inverted-colour) !important;
+  --toolbar-field-focus-color: var(--uc-inverted-colour) !important;
+  --toolbar-field-focus-background-color: var(--uc-highlight-colour) !important;
+  --toolbar-field-focus-border-color: transparent !important;
+  --toolbar-field-background-color: var(--lwt-frame) !important;
+  --lwt-toolbar-field-highlight: var(--uc-inverted-colour) !important;
+  --lwt-toolbar-field-highlight-text: var(--uc-highlight-colour) !important;
+  --urlbar-popup-url-color: var(--uc-accent-colour) !important;
+
+  --lwt-tab-text: var(--lwt-text-colour) !important;
+  --lwt-selected-tab-background-color: var(--uc-highlight-colour) !important;
+
+  --toolbar-bgcolor: var(--lwt-frame) !important;
+  --toolbar-color: var(--lwt-text-color) !important;
+  --toolbarseparator-color: var(--uc-accent-colour) !important;
+  --toolbarbutton-hover-background: var(--uc-highlight-colour) !important;
+  --toolbarbutton-active-background: var(--toolbarbutton-hover-background) !important;
+
+  --lwt-sidebar-background-color: var(--lwt-frame) !important;
+  --sidebar-background-color: var(--lwt-sidebar-background-color) !important;
+
+  --urlbar-box-bgcolor: var(--uc-highlight-colour) !important;
+  --urlbar-box-text-color: var(--uc-muted-colour) !important;
+  --urlbar-box-hover-bgcolor: var(--uc-highlight-colour) !important;
+  --urlbar-box-hover-text-color: var(--uc-inverted-colour) !important;
+  --urlbar-box-focus-bgcolor: var(--uc-highlight-colour) !important;
+
+  --toolbarbutton-border-radius: var(--uc-border-radius) !important;
+  --tab-border-radius: var(--uc-border-radius) !important;
+  --arrowpanel-border-radius: var(--uc-border-radius) !important;
+}
+
+/* Container tab identity colors */
+.identity-color-blue { --identity-tab-color: var(--uc-identity-colour-blue) !important; --identity-icon-color: var(--uc-identity-colour-blue) !important; }
+.identity-color-turquoise { --identity-tab-color: var(--uc-identity-colour-turquoise) !important; --identity-icon-color: var(--uc-identity-colour-turquoise) !important; }
+.identity-color-green { --identity-tab-color: var(--uc-identity-colour-green) !important; --identity-icon-color: var(--uc-identity-colour-green) !important; }
+.identity-color-yellow { --identity-tab-color: var(--uc-identity-colour-yellow) !important; --identity-icon-color: var(--uc-identity-colour-yellow) !important; }
+.identity-color-orange { --identity-tab-color: var(--uc-identity-colour-orange) !important; --identity-icon-color: var(--uc-identity-colour-orange) !important; }
+.identity-color-red { --identity-tab-color: var(--uc-identity-colour-red) !important; --identity-icon-color: var(--uc-identity-colour-red) !important; }
+.identity-color-pink { --identity-tab-color: var(--uc-identity-colour-pink) !important; --identity-icon-color: var(--uc-identity-colour-pink) !important; }
+.identity-color-purple { --identity-tab-color: var(--uc-identity-colour-purple) !important; --identity-icon-color: var(--uc-identity-colour-purple) !important; }
+
+/* Remove shadows and borders */
+#main-window,
+#toolbar-menubar,
+#TabsToolbar,
+#navigator-toolbox,
+#sidebar-box,
+#nav-bar {
+  box-shadow: none !important;
+}
+
+#main-window,
+#toolbar-menubar,
+#TabsToolbar,
+#PersonalToolbar,
+#navigator-toolbox,
+#sidebar-box,
+#nav-bar {
+  border: none !important;
+}
+
+.titlebar-spacer {
+  display: none !important;
+}
+
+/* Personal toolbar styling */
+#PersonalToolbar {
+  padding: 6px !important;
+  box-shadow: inset 0 0 50vh rgba(0, 0, 0, var(--uc-darken-toolbar)) !important;
+}
+
+/* Status panel styling */
+#statuspanel #statuspanel-label {
+  border: none !important;
+  border-radius: var(--uc-border-radius) !important;
+  margin: 0 0 var(--uc-status-panel-spacing) var(--uc-status-panel-spacing) !important;
+}
+
+/* Oneline layout for wider screens */
+@media (min-width: 1000px) {
+  #navigator-toolbox {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+
+  #nav-bar {
+    order: var(--uc-urlbar-position);
+    width: var(--uc-urlbar-min-width);
+  }
+
+  #nav-bar #urlbar-container {
+    min-width: 0px !important;
+    width: auto !important;
+  }
+
+  #titlebar {
+    order: 2;
+    width: calc(100vw - var(--uc-urlbar-min-width) - 1px);
+  }
+
+  #PersonalToolbar {
+    order: var(--uc-toolbar-position);
+    width: 100%;
+  }
+
+  #navigator-toolbox:focus-within #nav-bar {
+    width: var(--uc-urlbar-max-width);
+  }
+
+  #navigator-toolbox:focus-within #titlebar {
+    width: calc(100vw - var(--uc-urlbar-max-width) - 1px);
+  }
+}
+
+/* Nav bar styling */
+#nav-bar {
+  padding-block-start: 0px !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+#urlbar,
+#urlbar * {
+  padding-block-start: var(--uc-urlbar-top-spacing) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#urlbar-background {
+  border: transparent !important;
+}
+
+#urlbar[focused='true']>#urlbar-background,
+#urlbar:not([open])>#urlbar-background {
+  background: var(--toolbar-field-background-color) !important;
+}
+
+#urlbar[open]>#urlbar-background {
+  background: var(--toolbar-field-background-color) !important;
+}
+
+.urlbarView-row:hover>.urlbarView-row-inner,
+.urlbarView-row[selected]>.urlbarView-row-inner {
+  background: var(--toolbar-field-focus-background-color) !important;
+}
+
+.urlbar-icon,
+#urlbar-go-button {
+  margin: auto;
+}
+
+.urlbar-page-action {
+  padding: 0 inherit !important;
+}
+
+.urlbar-page-action .urlbar-icon {
+  margin-top: 6px !important;
+}
+
+/* Tab styling */
+#tabbrowser-tabs[haspinnedtabs]:not([positionpinnedtabs])>#tabbrowser-arrowscrollbox>.tabbrowser-tab:nth-child(1 of :not([pinned], [hidden])) {
+  margin-inline-start: 0 !important;
+}
+
+#alltabs-button {
+  display: var(--uc-show-all-tabs-button) !important;
+}
+
+.tabbrowser-tab>.tab-stack>.tab-background {
+  box-shadow: none !important;
+}
+
+#tabbrowser-tabs:not([noshadowfortests]) .tabbrowser-tab:is([multiselected])>.tab-stack>.tab-background:-moz-lwtheme {
+  outline-color: var(--toolbarseparator-color) !important;
+}
+
+.tabbrowser-tab:not([pinned]) .tab-close-button {
+  display: var(--show-tab-close-button) !important;
+}
+
+.tabbrowser-tab:not([pinned]):hover .tab-close-button {
+  display: var(--show-tab-close-button-hover) !important
+}
+
+.tabbrowser-tab[selected][fadein]:not([pinned]) {
+  max-width: var(--uc-active-tab-width) !important;
+}
+
+.tabbrowser-tab[fadein]:not([selected]):not([pinned]) {
+  max-width: var(--uc-inactive-tab-width) !important;
+}
+
+/* Container tabs indicator */
+.tabbrowser-tab[usercontextid]>.tab-stack>.tab-background>.tab-context-line {
+  margin: -1px var(--container-tabs-indicator-margin) 0 var(--container-tabs-indicator-margin) !important;
+  height: 1px !important;
+  box-shadow: var(--uc-identity-glow) var(--identity-tab-color) !important;
+}
+
+/* Tab icon and sound indicator */
+.tab-icon-image:not([pinned]) {
+  opacity: 1 !important;
+}
+
+.tab-icon-overlay:not([crashed]),
+.tab-icon-overlay[pinned][crashed][selected] {
+  top: 5px !important;
+  z-index: 1 !important;
+  padding: 1.5px !important;
+  inset-inline-end: -8px !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 10px !important;
+}
+
+.tab-icon-overlay:not([sharing], [crashed]):is([soundplaying], [muted], [activemedia-blocked]) {
+  stroke: transparent !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  fill-opacity: 0.8 !important;
+  color: currentColor !important;
+  stroke: var(--toolbar-bgcolor) !important;
+  background-color: var(--toolbar-bgcolor) !important;
+}
+
+.tabbrowser-tab[selected] .tab-icon-overlay:not([sharing], [crashed]):is([soundplaying], [muted], [activemedia-blocked]) {
+  stroke: var(--toolbar-bgcolor) !important;
+  background-color: var(--toolbar-bgcolor) !important;
+}
+
+.tabbrowser-tab[selected] .tab-content {
+  background-color: var(--uc-highlight-colour) !important;
+}
+
+/* Context menu styling */
+:root {
+  --arrowpanel-menuitem-margin: 0 8px;
+  --arrowpanel-menuitem-padding-block: 8px;
+  --arrowpanel-menuitem-padding-inline: 8px;
+  --arrowpanel-menuitem-border-radius: 4px;
+  --panel-separator-margin-vertical: 4px;
+  --button-hover-bgcolor: rgb(82, 82, 94);
+}
+
+menupopup:not(.in-menulist) {
+  --panel-background: var(--uc-base-colour) !important;
+  --panel-color: var(--uc-inverted-colour) !important;
+  --panel-separator-color: var(--uc-identity-colour-blue) !important;
+  --panel-border-color: var(--uc-base-colour) !important;
+}
+
+menupopup>menuseparator {
+  border-color: var(--panel-separator-color, ThreeDShadow) !important;
+}
+
+menupopup {
+  --panel-item-hover-bgcolor: var(--button-hover-bgcolor);
+  --panel-border-radius: var(--arrowpanel-border-radius) !important;
+}
+
+menupopup>menuitem,
+menupopup>menu {
+  appearance: none !important;
+  margin: var(--arrowpanel-menuitem-margin) !important;
+  min-height: 24px !important;
+  padding: var(--arrowpanel-menuitem-padding-block) var(--arrowpanel-menuitem-padding-inline) !important;
+  border-radius: var(--arrowpanel-menuitem-border-radius) !important;
+  background-color: transparent !important;
+}
+
+menupopup>menuitem[_moz-menuactive],
+menupopup>menu[_moz-menuactive] {
+  background-color: var(--panel-item-hover-bgcolor) !important;
+  color: var(--panel-color, inherit) !important;
+}

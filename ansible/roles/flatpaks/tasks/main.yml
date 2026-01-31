@@ -1,0 +1,51 @@
+---
+# Flatpaks role - Centralized Flatpak management
+# Reads from flatpaks.yml and installs all applications
+
+- name: Install flatpak
+  become: true
+  ansible.builtin.apt:
+    name: flatpak
+    state: present
+    install_recommends: false
+  tags: [flatpaks, packages]
+
+- name: Add Flathub repository
+  community.general.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    state: present
+  tags: [flatpaks, packages]
+
+- name: Load flatpak list
+  ansible.builtin.include_vars:
+    file: "{{ playbook_dir }}/flatpaks.yml"
+  tags: [flatpaks]
+
+- name: Flatten flatpak list
+  ansible.builtin.set_fact:
+    flatpak_list: "{{ flatpaks.values() | flatten | select('string') | list }}"
+  tags: [flatpaks]
+
+- name: Install all Flatpak applications
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ flatpak_list }}"
+  when: flatpak_list | length > 0
+  tags: [flatpaks]
+
+- name: Apply GTK dark theme to all Flatpaks
+  ansible.builtin.command:
+    cmd: flatpak override --user --env=GTK_THEME=adw-gtk3-dark
+  changed_when: false
+  tags: [flatpaks, config]
+
+- name: Display installed Flatpaks
+  ansible.builtin.debug:
+    msg: |
+      Flatpak applications installed:
+      {{ flatpak_list | join('\n') }}
+      
+      To add more apps, edit ansible/flatpaks.yml
+  tags: [flatpaks]

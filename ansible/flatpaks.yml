@@ -1,0 +1,28 @@
+# Centralized Flatpak Application List
+# Add/remove apps here to manage Flatpak installations
+# Run: ansible-playbook -i inventory.yml playbook.yml --tags flatpaks
+
+flatpaks:
+  browsers:
+    - org.mozilla.firefox
+
+  communication:
+    - com.slack.Slack
+    # - com.discordapp.Discord
+    # - org.telegram.desktop
+
+  media:
+    # - org.videolan.VLC
+    # - io.github.celluloid_player.Celluloid
+
+  productivity:
+    # - md.obsidian.Obsidian
+    # - org.libreoffice.LibreOffice
+
+  development:
+    # - com.visualstudio.code
+    # - com.github.tchx84.Flatseal
+
+  utilities:
+    # - org.gnome.Calculator
+    # - org.gnome.FileRoller

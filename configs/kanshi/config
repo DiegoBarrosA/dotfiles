@@ -1,0 +1,31 @@
+# Kanshi display configuration
+# Automatically switches display profiles based on connected outputs
+
+# Laptop only - internal display
+profile laptop {
+    output eDP-1 enable mode 1920x1080@60Hz position 0,0 scale 1.0
+}
+
+# Docked - disable laptop screen, use external monitor
+profile docked {
+    output eDP-1 disable
+    output DP-1 enable mode 2560x1440@60Hz position 0,0 scale 1.0
+}
+
+# Dual monitor - laptop on left, external on right
+profile dual {
+    output eDP-1 enable mode 1920x1080@60Hz position 0,0 scale 1.0
+    output DP-1 enable mode 2560x1440@60Hz position 1920,0 scale 1.0
+}
+
+# HDMI connected (alternative docked)
+profile hdmi-docked {
+    output eDP-1 disable
+    output HDMI-A-1 enable position 0,0
+}
+
+# HDMI dual
+profile hdmi-dual {
+    output eDP-1 enable position 0,0
+    output HDMI-A-1 enable position 1920,0
+}

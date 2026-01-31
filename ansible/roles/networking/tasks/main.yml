@@ -52,3 +52,78 @@
     mode: '0600'
   notify: Apply netplan
   tags: [networking, config]
+
+# --- Multi-VPN Split-Horizon DNS Configuration ---
+- name: Create systemd-resolved config directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d
+    state: directory
+    mode: '0755'
+  tags: [networking, dns]
+
+- name: Configure systemd-resolved for split-horizon DNS
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/systemd/resolved.conf.d/dns.conf
+    content: |
+      # Multi-VPN DNS configuration
+      # Each VPN gets its own routing domain automatically
+      [Resolve]
+      DNS=1.1.1.1 9.9.9.9
+      FallbackDNS=8.8.8.8 8.8.4.4
+      DNSStubListener=yes
+      MulticastDNS=no
+      LLMNR=no
+      Cache=yes
+    mode: '0644'
+  notify: Restart systemd-resolved
+  tags: [networking, dns]
+
+- name: Configure NetworkManager to use systemd-resolved
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/NetworkManager/conf.d/dns.conf
+    content: |
+      # Use systemd-resolved for DNS
+      [main]
+      dns=systemd-resolved
+      systemd-resolved=true
+    mode: '0644'
+  notify: Restart NetworkManager
+  tags: [networking, dns]
+
+- name: Ensure resolv.conf symlink points to systemd-resolved
+  become: true
+  ansible.builtin.file:
+    src: /run/systemd/resolve/stub-resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+    force: yes
+  tags: [networking, dns]
+
+- name: Enable systemd-resolved service
+  become: true
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    enabled: true
+    state: started
+  tags: [networking, dns]
+
+- name: Display networking configuration info
+  ansible.builtin.debug:
+    msg: |
+      Networking configured for multi-VPN support:
+      
+      - NetworkManager: Primary network manager
+      - systemd-resolved: DNS with split-horizon support
+      - Fallback DNS: 1.1.1.1, 9.9.9.9
+      
+      VPN routing:
+      - Each VPN connection automatically gets its own DNS routing
+      - Tailscale: Uses MagicDNS for *.ts.net domains
+      - Work VPNs: Configure routing domains in VPN settings
+      
+      Check DNS routing: resolvectl status
+      Debug queries: resolvectl query example.com
+  tags: [networking]

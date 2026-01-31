@@ -1,0 +1,85 @@
+---
+# Nix installation and home-manager deployment role
+# Installs Nix package manager and deploys user's nix-config
+
+- name: Check if Nix is installed
+  ansible.builtin.stat:
+    path: /nix
+  register: nix_installed
+  tags: [nix]
+
+- name: Download Determinate Nix installer
+  ansible.builtin.get_url:
+    url: https://install.determinate.systems/nix
+    dest: /tmp/nix-installer.sh
+    mode: '0755'
+  when: not nix_installed.stat.exists
+  tags: [nix]
+
+- name: Install Nix (Determinate Systems installer)
+  ansible.builtin.shell:
+    cmd: /tmp/nix-installer.sh install --no-confirm
+  when: not nix_installed.stat.exists
+  tags: [nix]
+
+- name: Clean up Nix installer
+  ansible.builtin.file:
+    path: /tmp/nix-installer.sh
+    state: absent
+  tags: [nix]
+
+- name: Check if nix-config repository exists
+  ansible.builtin.stat:
+    path: "{{ user_home }}/nix-config"
+  register: nix_config_repo
+  tags: [nix]
+
+- name: Clone nix-config repository
+  ansible.builtin.git:
+    repo: https://github.com/DiegoBarrosA/nix-config.git
+    dest: "{{ user_home }}/nix-config"
+    update: yes
+  when: not nix_config_repo.stat.exists
+  tags: [nix]
+
+- name: Update nix-config repository
+  ansible.builtin.git:
+    repo: https://github.com/DiegoBarrosA/nix-config.git
+    dest: "{{ user_home }}/nix-config"
+    update: yes
+  when: nix_config_repo.stat.exists
+  tags: [nix]
+
+- name: Deploy home-manager configuration for rubi
+  ansible.builtin.shell:
+    cmd: |
+      # Source Nix environment
+      if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+      fi
+      
+      # Run home-manager switch
+      nix run home-manager -- switch --flake {{ user_home }}/nix-config#rubi
+    executable: /bin/bash
+  environment:
+    HOME: "{{ user_home }}"
+    USER: "{{ user_name }}"
+  register: hm_result
+  changed_when: "'activating' in hm_result.stdout"
+  tags: [nix]
+
+- name: Display home-manager deployment status
+  ansible.builtin.debug:
+    msg: |
+      Nix and home-manager have been deployed.
+      
+      Configuration: {{ user_home }}/nix-config#rubi
+      
+      To manually update: cd ~/nix-config && home-manager switch --flake .#rubi
+      
+      CLI tools now available via Nix:
+      - fish, zellij (shell and multiplexer)
+      - helix, bat, ripgrep, fd, fzf
+      - swayr, cliphist, csvlens, oxker, slumber, trippy, termusic
+      - yazi, bottom, starship, zoxide
+  tags: [nix]

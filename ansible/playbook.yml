@@ -1,6 +1,7 @@
 ---
 # Dotfiles Deployment Playbook
 # Deploys a Sway-based desktop environment on Ubuntu
+# Integrates with Nix home-manager for CLI tools
 
 - name: Deploy desktop environment
   hosts: localhost
@@ -19,38 +20,67 @@
       tags: [always]
 
   roles:
+    # System packages and base setup
     - role: packages
       tags: [packages]
+    - role: system-optimization
+      tags: [optimization]
+    - role: networking
+      tags: [networking]
+    
+    # Nix and CLI tools
+    - role: nix
+      tags: [nix]
+    
+    # Cursor and theming
     - role: bibata-cursor
       tags: [bibata-cursor, cursor]
     - role: cursor
       tags: [cursor]
+    
+    # Container and development
     - role: docker
       tags: [docker]
+    
+    # Desktop environment builds
     - role: waybar-build
       tags: [waybar-build, waybar]
     - role: niri
       tags: [niri]
+    
+    # Fonts and theming
     - role: fonts
       tags: [fonts, config]
     - role: gtk
       tags: [gtk, config]
+    
+    # Window manager and bar
     - role: sway
       tags: [sway, config]
     - role: waybar
       tags: [waybar, config]
-    - role: ghostty
-      tags: [ghostty, config]
+    
+    # Terminal (Alacritty daemon-client)
+    - role: alacritty
+      tags: [alacritty, terminal, config]
+    
+    # Notifications and launcher
     - role: mako
       tags: [mako, config]
     - role: fuzzel
       tags: [fuzzel, config]
+    
+    # Screen lock
     - role: swaylock
       tags: [swaylock, config]
-    - role: edge
-      tags: [edge, config]
-    - role: networking
-      tags: [networking, config]
+    
+    # Applications (Flatpak)
+    - role: flatpaks
+      tags: [flatpaks]
+    - role: firefox
+      tags: [firefox, browser, config]
+    
+    # Display manager
     - role: greetd
       tags: [greetd, config]
 
@@ -60,13 +90,26 @@
         msg: |
           Desktop environment deployed successfully!
           
-          greetd has been configured with tuigreet as the display manager.
-          On next reboot, you will be greeted by tuigreet.
+          Key changes:
+          - Terminal: Alacritty (daemon-client mode for lower memory)
+          - Browser: Firefox (Flatpak with Cascade theme)
+          - CLI tools: Managed by Nix home-manager
+          - System: Optimized with zram, sysctl tuning
+          - VPN: Multi-VPN support with split-horizon DNS
           
-          To start using sway immediately:
+          New keybinds:
+          - $mod+v: Clipboard history
+          - $mod+Shift+n: Network manager (nmtui)
+          - $mod+Shift+b: Bluetooth manager
+          - $mod+Shift+d: Display settings
+          - $mod+Print: Screenshot menu
+          - $mod+Shift+r: Screen recording
+          
+          To start using sway:
           1. Log out of your current session
           2. Select 'Sway' from tuigreet
           3. Or run 'sway' from a TTY
           
-          Note: You may need to log out and back in for all changes to take effect.
+          CLI tools (via Nix): fish, zellij, helix, bat, bottom, yazi, etc.
+          Run: cd ~/nix-config && home-manager switch --flake .#rubi
       tags: [always]

@@ -1,0 +1,13 @@
+---
+# Handlers for system-optimization role
+
+- name: Restart zramswap
+  become: true
+  ansible.builtin.systemd:
+    name: zramswap
+    state: restarted
+
+- name: Reload sysctl
+  become: true
+  ansible.builtin.command:
+    cmd: sysctl --system

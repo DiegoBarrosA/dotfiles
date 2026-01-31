@@ -1,0 +1,87 @@
+---
+# Firefox role - Install Firefox via Flatpak with Cascade theme
+
+- name: Install flatpak
+  become: true
+  ansible.builtin.apt:
+    name: flatpak
+    state: present
+    install_recommends: false
+  tags: [firefox, packages]
+
+- name: Add Flathub repository
+  community.general.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    state: present
+  tags: [firefox, packages]
+
+- name: Install Firefox
+  community.general.flatpak:
+    name: org.mozilla.firefox
+    state: present
+  tags: [firefox, packages]
+
+- name: Grant Firefox filesystem access for better integration
+  ansible.builtin.command:
+    cmd: flatpak override --user org.mozilla.firefox --filesystem=home --filesystem=xdg-download
+  changed_when: false
+  tags: [firefox, config]
+
+- name: Enable Wayland for Firefox
+  ansible.builtin.command:
+    cmd: flatpak override --user org.mozilla.firefox --env=MOZ_ENABLE_WAYLAND=1
+  changed_when: false
+  tags: [firefox, config]
+
+# Note: Firefox profile directory is created on first run
+# We create it proactively to deploy theme
+- name: Ensure Firefox profile directories exist
+  ansible.builtin.file:
+    path: "{{ user_home }}/.var/app/org.mozilla.firefox/.mozilla/firefox/default/chrome"
+    state: directory
+    mode: '0755'
+  tags: [firefox, config]
+
+- name: Deploy Cascade userChrome.css theme
+  ansible.builtin.template:
+    src: userChrome.css.j2
+    dest: "{{ user_home }}/.var/app/org.mozilla.firefox/.mozilla/firefox/default/chrome/userChrome.css"
+    mode: '0644'
+  tags: [firefox, config]
+
+- name: Deploy Firefox user.js preferences
+  ansible.builtin.template:
+    src: user.js.j2
+    dest: "{{ user_home }}/.var/app/org.mozilla.firefox/.mozilla/firefox/default/user.js"
+    mode: '0644'
+  tags: [firefox, config]
+
+- name: Create profiles.ini for Firefox
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.var/app/org.mozilla.firefox/.mozilla/firefox/profiles.ini"
+    mode: '0644'
+    content: |
+      [Profile0]
+      Name=default
+      IsRelative=1
+      Path=default
+      Default=1
+
+      [General]
+      StartWithLastProfile=1
+      Version=2
+  tags: [firefox, config]
+
+- name: Display Firefox setup notice
+  ansible.builtin.debug:
+    msg: |
+      Firefox has been installed via Flatpak with Cascade theme.
+      
+      Theme location: ~/.var/app/org.mozilla.firefox/.mozilla/firefox/default/chrome/
+      
+      Note: If Firefox creates a different profile on first run,
+      you may need to copy the chrome folder to the correct profile directory.
+      
+      Profile directory can be found at: about:profiles in Firefox
+  tags: [firefox]
