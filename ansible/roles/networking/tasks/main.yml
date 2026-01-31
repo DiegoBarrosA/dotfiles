@@ -1,0 +1,54 @@
+---
+# Networking role - Configure NetworkManager for desktop use
+# Disables systemd-networkd to avoid conflicts and slow boot times
+
+- name: Install NetworkManager and related packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - network-manager
+      - network-manager-gnome
+    state: present
+    install_recommends: false
+  tags: [networking, packages]
+
+- name: Disable systemd-networkd services (using NetworkManager instead)
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  loop:
+    - systemd-networkd.service
+    - systemd-networkd.socket
+    - systemd-networkd-wait-online.service
+  ignore_errors: true
+  tags: [networking, config]
+
+- name: Ensure NetworkManager is enabled and running
+  become: true
+  ansible.builtin.systemd:
+    name: NetworkManager
+    enabled: true
+    state: started
+  tags: [networking, config]
+
+- name: Disable NetworkManager-wait-online to speed up boot
+  become: true
+  ansible.builtin.systemd:
+    name: NetworkManager-wait-online.service
+    enabled: false
+  tags: [networking, config]
+
+- name: Configure netplan to use NetworkManager as renderer
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/netplan/01-network-manager-all.yaml
+    content: |
+      # Let NetworkManager manage all devices
+      network:
+        version: 2
+        renderer: NetworkManager
+    mode: '0600'
+  notify: Apply netplan
+  tags: [networking, config]

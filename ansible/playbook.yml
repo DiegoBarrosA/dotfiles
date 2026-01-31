@@ -21,6 +21,16 @@
   roles:
     - role: packages
       tags: [packages]
+    - role: bibata-cursor
+      tags: [bibata-cursor, cursor]
+    - role: cursor
+      tags: [cursor]
+    - role: docker
+      tags: [docker]
+    - role: waybar-build
+      tags: [waybar-build, waybar]
+    - role: niri
+      tags: [niri]
     - role: fonts
       tags: [fonts, config]
     - role: gtk
@@ -29,16 +39,18 @@
       tags: [sway, config]
     - role: waybar
       tags: [waybar, config]
-    - role: alacritty
-      tags: [alacritty, config]
+    - role: ghostty
+      tags: [ghostty, config]
     - role: mako
       tags: [mako, config]
     - role: fuzzel
       tags: [fuzzel, config]
     - role: swaylock
       tags: [swaylock, config]
-    - role: firefox
-      tags: [firefox, config]
+    - role: edge
+      tags: [edge, config]
+    - role: networking
+      tags: [networking, config]
     - role: greetd
       tags: [greetd, config]
 

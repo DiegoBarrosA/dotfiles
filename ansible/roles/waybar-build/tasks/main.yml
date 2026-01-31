@@ -1,0 +1,106 @@
+---
+# Waybar - Build from Source with Niri Support
+
+- name: Remove old waybar package if installed
+  become: true
+  ansible.builtin.apt:
+    name: waybar
+    state: absent
+    purge: true
+  tags: [waybar-build, waybar]
+
+- name: Install Waybar build dependencies
+  become: true
+  ansible.builtin.apt:
+    name:
+      - libgtkmm-3.0-dev
+      - libjsoncpp-dev
+      - libsigc++-2.0-dev
+      - libfmt-dev
+      - libwayland-dev
+      - libspdlog-dev
+      - libgtk-3-dev
+      - libpulse-dev
+      - libnl-3-dev
+      - libnl-genl-3-dev
+      - libayatana-appindicator3-dev
+      - libdbusmenu-glib-dev
+      - libdbusmenu-gtk3-dev
+      - libmpdclient-dev
+      - libevdev-dev
+      - libupower-glib-dev
+      - libgtk-layer-shell-dev
+      - meson
+      - ninja-build
+      - cmake
+      - scdoc
+      - wayland-protocols
+      - libxkbregistry-dev
+      - libjack-jackd2-dev
+      - libwireplumber-0.4-dev
+      - libplayerctl-dev
+      - libglib2.0-dev
+    state: present
+    update_cache: true
+    install_recommends: false
+  tags: [waybar-build, waybar]
+
+- name: Check if Waybar is already built
+  ansible.builtin.stat:
+    path: /usr/local/bin/waybar
+  register: waybar_installed
+  tags: [waybar-build, waybar]
+
+- name: Clone Waybar repository
+  ansible.builtin.git:
+    repo: "{{ waybar_repo }}"
+    dest: "{{ waybar_build_dir }}"
+    version: "{{ waybar_version }}"
+    force: true
+  when: not waybar_installed.stat.exists
+  tags: [waybar-build, waybar]
+
+- name: Configure Waybar build with meson
+  ansible.builtin.command:
+    cmd: meson setup build -Dsystemd=disabled -Dexperimental=true
+    chdir: "{{ waybar_build_dir }}"
+  when: not waybar_installed.stat.exists
+  tags: [waybar-build, waybar]
+
+- name: Build Waybar with ninja
+  ansible.builtin.command:
+    cmd: ninja -C build
+    chdir: "{{ waybar_build_dir }}"
+  when: not waybar_installed.stat.exists
+  tags: [waybar-build, waybar]
+
+- name: Install Waybar
+  become: true
+  ansible.builtin.command:
+    cmd: ninja -C build install
+    chdir: "{{ waybar_build_dir }}"
+  when: not waybar_installed.stat.exists
+  tags: [waybar-build, waybar]
+
+- name: Clean up build directory
+  ansible.builtin.file:
+    path: "{{ waybar_build_dir }}"
+    state: absent
+  when: not waybar_installed.stat.exists
+  tags: [waybar-build, waybar]
+
+- name: Display Waybar installation notice
+  ansible.builtin.debug:
+    msg: |
+      Waybar has been compiled and installed from source!
+      
+      Binary location: /usr/local/bin/waybar
+      Version: {{ waybar_version }}
+      
+      Niri modules available:
+      - niri/workspaces
+      - niri/window
+      - niri/language
+      
+      Update your waybar config to use these modules for Niri integration.
+  tags: [waybar-build, waybar]

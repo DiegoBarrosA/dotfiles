@@ -12,7 +12,7 @@ case "$CHOICE" in
         swaylock -f
         ;;
     *"Logout")
-        swaymsg exit
+        loginctl terminate-user $USER
         ;;
     *"Suspend")
         swaylock -f && systemctl suspend

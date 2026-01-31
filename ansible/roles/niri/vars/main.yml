@@ -1,0 +1,5 @@
+---
+# Niri build configuration
+niri_repo: "https://github.com/YaLTeR/niri.git"
+niri_version: "main"
+niri_build_dir: "/tmp/niri-build"

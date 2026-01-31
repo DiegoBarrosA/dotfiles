@@ -1,14 +1,33 @@
-# Swaylock Configuration - Material Darker Theme
+# Swaylock-effects Configuration - Material Darker Theme
 
 # Behavior
 daemonize
 ignore-empty-password
 show-failed-attempts
+scaling=center
+# Screenshot and Effects
+screenshots
+effect-blur=10x10
+effect-vignette=0.5:0.5
+effect-scale=1.5
+hide-keyboard-layout
+# effect-greyscale
+
+# Clock Display
+clock
+indicator
+indicator-idle-visible
+timestr=%H:%M
+datestr=%A, %B %d
+
+# Transitions
+fade-in=0.3
+grace=2
+grace-no-mouse
 
 # Appearance
-color=212121
-font=Fantasque Sans Mono
-font-size=64
+font=Cantarell
+font-size=120
 
 # Inside circle (idle state) - transparent
 inside-color=21212100
@@ -18,11 +37,11 @@ inside-ver-color=21212100
 inside-wrong-color=21212100
 
 # Ring colors
-ring-color=82aaff
-ring-clear-color=89ddff
-ring-caps-lock-color=ffcb6b
-ring-ver-color=c792ea
-ring-wrong-color=ff5370
+ring-color=00000000
+ring-clear-color=89ddff00
+ring-caps-lock-color=ffcb6b00
+ring-ver-color=c792ea00
+ring-wrong-color=ff537000
 
 # Line (between ring and inside) - transparent
 line-color=00000000
@@ -33,7 +52,7 @@ line-wrong-color=00000000
 separator-color=00000000
 
 # Key highlight
-key-hl-color=c3e88d
+key-hl-color=82AAFF
 bs-hl-color=f78c6c
 caps-lock-key-hl-color=ffcb6b
 caps-lock-bs-hl-color=f78c6c
@@ -50,6 +69,6 @@ layout-text-color=b2ccd6
 layout-bg-color=212121
 
 # Indicator
-indicator-radius=200
-indicator-thickness=20
+indicator-radius=300
+indicator-thickness=15
 indicator-caps-lock

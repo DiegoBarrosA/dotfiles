@@ -1,0 +1,29 @@
+---
+# Edge role - Install Microsoft Edge via Flatpak
+
+- name: Install flatpak
+  become: true
+  ansible.builtin.apt:
+    name: flatpak
+    state: present
+    install_recommends: false
+  tags: [edge, packages]
+
+- name: Add Flathub repository
+  community.general.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    state: present
+  tags: [edge, packages]
+
+- name: Install Microsoft Edge
+  community.general.flatpak:
+    name: com.microsoft.Edge
+    state: present
+  tags: [edge, packages]
+
+- name: Grant Edge filesystem access for better integration
+  ansible.builtin.command:
+    cmd: flatpak override --user com.microsoft.Edge --filesystem=home
+  changed_when: false
+  tags: [edge, config]

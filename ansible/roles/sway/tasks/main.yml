@@ -98,3 +98,26 @@
     state: directory
     mode: '0755'
   tags: [sway, config]
+
+- name: Deploy immersed script
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../configs/sway/scripts/immersed.sh"
+    dest: "{{ user_home }}/.config/sway/scripts/immersed.sh"
+    mode: '0755'
+  tags: [sway, config]
+
+- name: Create local bin directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.local/bin"
+    state: directory
+    mode: '0755'
+  tags: [sway, config]
+
+- name: Download Immersed AppImage
+  ansible.builtin.get_url:
+    url: "{{ immersed_appimage_url | default('') }}"
+    dest: "{{ user_home }}/.local/bin/Immersed-x86_64.AppImage"
+    mode: '0755'
+    timeout: 300
+  when: immersed_appimage_url is defined and immersed_appimage_url != ''
+  tags: [sway, config]

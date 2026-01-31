@@ -8,11 +8,33 @@
     mode: '0755'
   tags: [waybar, config]
 
-- name: Deploy waybar config
+- name: Deploy waybar Sway config
   ansible.builtin.copy:
-    src: "{{ playbook_dir }}/../configs/waybar/config.jsonc"
-    dest: "{{ user_home }}/.config/waybar/config"
+    src: "{{ playbook_dir }}/../configs/waybar/config-sway.jsonc"
+    dest: "{{ user_home }}/.config/waybar/config-sway.jsonc"
     mode: '0644'
+  tags: [waybar, config]
+
+- name: Deploy waybar Niri config
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../configs/waybar/config-niri.jsonc"
+    dest: "{{ user_home }}/.config/waybar/config-niri.jsonc"
+    mode: '0644'
+  tags: [waybar, config]
+
+- name: Remove old waybar config if it's a regular file
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/waybar/config"
+    state: absent
+  when: ansible_check_mode == false
+  tags: [waybar, config]
+
+- name: Create default waybar config symlink (points to Sway)
+  ansible.builtin.file:
+    src: "{{ user_home }}/.config/waybar/config-sway.jsonc"
+    dest: "{{ user_home }}/.config/waybar/config"
+    state: link
+    force: true
   tags: [waybar, config]
 
 - name: Deploy waybar style

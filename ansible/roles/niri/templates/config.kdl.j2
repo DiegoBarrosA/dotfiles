@@ -1,0 +1,266 @@
+// Niri Configuration - Material Darker Theme
+// Matching Sway setup for consistent workflow
+
+input {
+    keyboard {
+        xkb {
+            layout "us,es"
+            options "caps:ctrl_modifier,grp:alt_space_toggle"
+        }
+    }
+
+    touchpad {
+        natural-scroll
+        tap
+        dwt
+    }
+}
+
+output "eDP-1" {
+    scale 1.0
+}
+
+layout {
+    gaps 8
+    center-focused-column "never"
+    tab-indicator {
+        width 8
+        gap 8
+        length total-proportion=1.0
+        position "top"
+        place-within-column
+    }
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+
+    focus-ring {
+        width 3
+        active-color "#82aaff"
+        inactive-color "#4a4a4a"
+    }
+
+    border {
+        width 3
+        active-color "#82aaff"
+        inactive-color "#4a4a4a"
+    }
+
+    // Make workspace background transparent so wallpaper shows through
+    background-color "transparent"
+}
+
+cursor {
+    xcursor-theme "Bibata-Material-Darker"
+    xcursor-size 24
+}
+
+prefer-no-csd
+
+spawn-at-startup "Xwayland"
+spawn-at-startup "sh" "-c" "env DISPLAY=:0 i3"
+spawn-at-startup "swaybg" "-i" "/home/diego/Documents/dotfiles/assets/wallpapers/steve-busch-PkvnkMrnLFo-unsplash.jpg" "-m" "fill"
+spawn-at-startup "waybar --config /home/diego/.config/waybar/config-niri.jsonc"
+spawn-at-startup "mako"
+spawn-at-startup "swayidle" "-w" "timeout" "300" "swaylock" "-f" "timeout" "600" "niri" "msg" "action" "power-off-monitors" "resume" "niri" "msg" "action" "power-on-monitors" "before-sleep" "swaylock" "-f"
+spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP=niri" "XCURSOR_THEME" "XCURSOR_SIZE"
+
+environment {
+    QT_QPA_PLATFORM "wayland"
+    QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
+    MOZ_ENABLE_WAYLAND "1"
+    DISPLAY ":0"
+}
+
+binds {
+    // Basic bindings
+    Mod+Return { spawn "ghostty"; }
+    Mod+W { close-window; }
+    Mod+Space { spawn "fuzzel"; }
+    Mod+Shift+C { spawn "niri" "msg" "action" "reload-config"; }
+    Mod+Shift+E { spawn "{{ user_home }}/.config/sway/scripts/power-menu.sh"; }
+    Mod+Escape { spawn "swaylock" "-f"; }
+
+    // XWayland clipboard sync (using Alt to avoid conflict with Mod+Shift+C for reload-config)
+    Mod+Alt+C { spawn "sh" "-c" "env DISPLAY=:0 xsel -ob | wl-copy"; }
+    Mod+Alt+V { spawn "sh" "-c" "wl-paste -n | env DISPLAY=:0 xsel -ib"; }
+
+    // Brightness controls
+    XF86MonBrightnessUp { spawn "light" "-A" "15"; }
+    XF86MonBrightnessDown { spawn "light" "-U" "15"; }
+
+    // Volume controls
+    XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+
+    // Screenshot controls
+    Mod+Shift+S { spawn "flameshot" "gui"; }
+    Print { spawn "sh" "-c" "grim - | wl-copy"; }
+    Mod+Shift+A { spawn "sh" "-c" "grim -g \"$(slurp)\" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
+    Mod+Print { screenshot; }
+    Mod+Ctrl+Print { screenshot-screen; }
+    Mod+Alt+Print { screenshot-window; }
+
+    // Focus movement (vim keys)
+    Mod+H { focus-column-left; }
+    Mod+L { focus-column-right; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+
+    // Focus movement (arrow keys)
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Down { focus-window-down; }
+    Mod+Up { focus-window-up; }
+
+    // Window movement (vim keys)
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+L { move-column-right; }
+    Mod+Shift+J { move-window-down; }
+    Mod+Shift+K { move-window-up; }
+
+    // Window movement (arrow keys)
+    Mod+Shift+Left { move-column-left; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+Down { move-window-down; }
+    Mod+Shift+Up { move-window-up; }
+
+    // Workspace switching
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+0 { focus-workspace 10; }
+
+    // Move window to workspace
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+    Mod+Shift+0 { move-column-to-workspace 10; }
+
+    // Column width adjustments
+    Mod+Comma { set-column-width "-10%"; }
+    Mod+Period { set-column-width "+10%"; }
+
+    // Fullscreen and maximize
+    Mod+Shift+F { fullscreen-window; }
+    Mod+M { maximize-column; }
+
+    // Floating (center window)
+    Mod+Shift+Space { center-column; }
+
+    // Application shortcuts
+    Mod+F { spawn "firefox"; }
+    Mod+D { spawn "cursor" "--enable-features=UseOzonePlatform" "--ozone-platform=wayland" "--enable-wayland-ime"; }
+    Mod+E { spawn "pcmanfm"; }
+
+    // Scrolling through columns
+    Mod+Ctrl+H { focus-column-left; }
+    Mod+Ctrl+L { focus-column-right; }
+    Mod+Ctrl+Left { focus-column-left; }
+    Mod+Ctrl+Right { focus-column-right; }
+
+    // Close focused window
+    Mod+Q { close-window; }
+
+    // Consume or expel window into/from column
+    Mod+BracketLeft { consume-window-into-column; }
+    Mod+BracketRight { expel-window-from-column; }
+
+    // Resize mode alternative - cycle through preset widths
+    Mod+R { switch-preset-column-width; }
+    
+    // Reset window height
+    Mod+Shift+R { reset-window-height; }
+    
+    // Center window
+    Mod+C { center-column; }
+
+    // Focus monitors (if multiple)
+    Mod+Shift+Period { focus-monitor-right; }
+    Mod+Shift+Comma { focus-monitor-left; }
+
+    // Move column to monitor
+    Mod+Ctrl+Shift+Period { move-column-to-monitor-right; }
+    Mod+Ctrl+Shift+Comma { move-column-to-monitor-left; }
+
+    // Power/Session controls
+    Mod+Shift+Q { quit; }
+    
+    // Show keybinding overlay
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    
+    // Toggle overview
+    Mod+Tab { toggle-overview; }
+    Mod+I { toggle-column-tabbed-display; }
+}
+
+window-rule {
+    match app-id="firefox"
+    default-column-width { proportion 0.66667; }
+    open-on-workspace "5"
+}
+
+window-rule {
+    match app-id="cursor"
+    default-column-width { proportion 0.66667; }
+    open-on-workspace "6"
+}
+
+window-rule {
+    match app-id="pcmanfm"
+    default-column-width { proportion 0.5; }
+    open-on-workspace "7"
+}
+
+window-rule {
+    match app-id="obsidian"
+    default-column-width { proportion 0.66667; }
+    open-on-workspace "8"
+}
+
+window-rule {
+    match app-id="flameshot"
+    open-floating true
+    draw-border-with-background false
+}
+
+screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+// Make wallpaper visible in overview with dimming effect (no blur available)
+overview {
+    // Use a semi-transparent dark overlay instead of blur
+    // This creates a "dimmed" effect over the wallpaper
+    backdrop-color "#00000080"
+}
+
+// Layer rules to ensure wallpaper shows behind everything
+layer-rule {
+    match namespace="^wallpaper$"
+    place-within-backdrop true
+}
+
+debug {
+    render-drm-device "/dev/dri/renderD128"
+}

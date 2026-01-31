@@ -27,12 +27,20 @@ window#waybar.hidden {
     border-radius: 0;
 }
 
+
+
 #workspaces button:hover {
     background: rgba(130, 170, 255, 0.2);
     border: none;
 }
 
 #workspaces button.focused {
+    background-color: #82aaff;
+    color: #303030;
+    border: none;
+}
+
+#workspaces button.active {
     background-color: #82aaff;
     color: #303030;
     border: none;

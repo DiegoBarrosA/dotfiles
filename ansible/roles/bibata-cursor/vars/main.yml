@@ -1,0 +1,16 @@
+---
+# Bibata cursor build configuration
+
+bibata_repo: "https://github.com/ful1e5/Bibata_Cursor.git"
+bibata_build_dir: "/tmp/bibata-cursor-build"
+bibata_cursor_name: "Bibata-Material-Darker"
+
+# Material Darker color scheme for cursors
+# Color mapping in Bibata SVGs:
+#   #00FF00 (green) = base color (main cursor body)
+#   #0000FF (blue)  = outline color
+#   #FF0000 (red)   = accent/watch color
+bibata_colors:
+  base: "#212121"      # Dark background - main cursor color
+  outline: "#FFFFFF"   # White outline for visibility
+  accent: "#82AAFF"    # Blue accent for watch/loading animations

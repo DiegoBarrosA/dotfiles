@@ -1,0 +1,5 @@
+---
+# Waybar build configuration
+waybar_repo: "https://github.com/Alexays/Waybar.git"
+waybar_version: "master"
+waybar_build_dir: "/tmp/waybar-build"

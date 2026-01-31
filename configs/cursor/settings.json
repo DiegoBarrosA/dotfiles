@@ -1,0 +1,54 @@
+{
+  // Material Darker Theme - Cursor Settings
+  
+  // Theme
+  "workbench.colorTheme": "Community Material Theme Darker",
+  "materialTheme.accent": "Blue",
+  
+  // Custom color overrides for #82AAFF accent
+  "workbench.colorCustomizations": {
+    "activityBarBadge.background": "#82AAFF",
+    "editorCursor.foreground": "#82AAFF",
+    "inputOption.activeBorder": "#82AAFF",
+    "list.activeSelectionBackground": "#82AAFF40",
+    "list.highlightForeground": "#82AAFF",
+    "progressBar.background": "#82AAFF",
+    "textLink.foreground": "#82AAFF",
+    "textLink.activeForeground": "#82AAFF",
+    "notificationLink.foreground": "#82AAFF",
+    "editorLink.activeForeground": "#82AAFF",
+    "button.background": "#82AAFF",
+    "button.hoverBackground": "#6B93E0",
+    "focusBorder": "#82AAFF80",
+    "tab.activeBorderTop": "#82AAFF",
+    "panelTitle.activeBorder": "#82AAFF",
+    "settings.modifiedItemIndicator": "#82AAFF",
+    "editorOverviewRuler.findMatchForeground": "#82AAFF",
+    "editorOverviewRuler.bracketMatchForeground": "#82AAFF"
+  },
+  
+  // Editor
+  "editor.fontFamily": "'FantasqueSansM Nerd Font', 'Droid Sans Mono', monospace",
+  "editor.fontSize": 16,
+  "editor.lineHeight": 1.5,
+  "editor.cursorStyle": "line",
+  "editor.cursorBlinking": "smooth",
+  "editor.renderWhitespace": "selection",
+  "editor.minimap.enabled": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  
+  // Terminal
+  "terminal.integrated.fontFamily": "'FantasqueSansM Nerd Font'",
+  "terminal.integrated.fontSize": 16,
+  
+  // Workbench
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.sideBar.location": "left",
+  "workbench.startupEditor": "none",
+  "workbench.tree.indent": 16,
+  
+  // Window
+  "window.titleBarStyle": "native",
+  "window.menuBarVisibility": "visible"
+}

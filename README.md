@@ -7,7 +7,7 @@ Ansible-managed dotfiles for reproducible desktop environments on Ubuntu.
 This repository contains configurations for a Sway-based desktop environment with:
 - **Sway** - Tiling Wayland compositor
 - **Waybar** - Status bar
-- **Alacritty** - GPU-accelerated terminal
+- **Ghostty** - GPU-accelerated terminal
 - **Fuzzel** - Application launcher
 - **Mako** - Notification daemon
 - **Swaylock** - Screen locker
@@ -48,7 +48,7 @@ dotfiles/
 │       ├── packages/          # System package installation
 │       ├── sway/              # Sway window manager
 │       ├── waybar/            # Status bar
-│       ├── alacritty/         # Terminal emulator
+│       ├── ghostty/          # Terminal emulator
 │       ├── mako/              # Notification daemon
 │       ├── fuzzel/            # Application launcher
 │       ├── swaylock/          # Screen locker

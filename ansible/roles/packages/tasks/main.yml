@@ -78,21 +78,39 @@
     cache_valid_time: 3600
   tags: [packages]
 
+- name: Install essential utilities
+  become: true
+  ansible.builtin.apt:
+    name:
+      - zip
+      - unzip
+      - xdg-user-dirs
+    state: present
+    install_recommends: false
+  tags: [packages]
+
+- name: Update XDG user directories
+  ansible.builtin.command:
+    cmd: xdg-user-dirs-update
+  changed_when: false
+  tags: [packages]
+
 - name: Install Sway and Wayland essentials
   become: true
   ansible.builtin.apt:
     name:
       - sway
-      - swaylock
       - swayidle
       - swaybg
-      - waybar
       - wl-clipboard
       - xdg-desktop-portal-wlr
       - xdg-desktop-portal-gtk
       - xwayland
     state: present
+    install_recommends: false
   tags: [packages]
+
+# Note: swaylock-effects is built from source via the swaylock role
 
 - name: Install application launcher and notifications
   become: true
@@ -101,15 +119,10 @@
       - fuzzel
       - mako-notifier
     state: present
+    install_recommends: false
   tags: [packages]
 
-- name: Install terminal emulator
-  become: true
-  ansible.builtin.apt:
-    name:
-      - alacritty
-    state: present
-  tags: [packages]
+# Note: Ghostty is built from source via the ghostty role
 
 - name: Install file manager
   become: true
@@ -117,6 +130,24 @@
     name:
       - pcmanfm
     state: present
+    install_recommends: false
+  tags: [packages]
+
+- name: Create local applications directory for desktop overrides
+  ansible.builtin.file:
+    path: "{{ user_home }}/.local/share/applications"
+    state: directory
+    mode: '0755'
+  tags: [packages]
+
+- name: Hide PCManFM Desktop Preferences entry (doesn't work in Sway)
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.local/share/applications/pcmanfm-desktop-pref.desktop"
+    mode: '0644'
+    content: |
+      [Desktop Entry]
+      Type=Application
+      NoDisplay=true
   tags: [packages]
 
 - name: Install screenshot and screen recording tools
@@ -127,6 +158,7 @@
       - slurp
       - flameshot
     state: present
+    install_recommends: false
   tags: [packages]
 
 - name: Install audio/video utilities
@@ -139,6 +171,7 @@
       - pavucontrol
       - playerctl
     state: present
+    install_recommends: false
   tags: [packages]
 
 - name: Install brightness control
@@ -147,6 +180,7 @@
     name:
       - light
     state: present
+    install_recommends: false
   tags: [packages]
 
 - name: Install power management
@@ -155,6 +189,7 @@
     name:
       - power-profiles-daemon
     state: present
+    install_recommends: false
   tags: [packages]
 
 - name: Enable power-profiles-daemon service
@@ -188,6 +223,7 @@
     name: tailscale
     state: present
     update_cache: true
+    install_recommends: false
   tags: [packages, tailscale]
 
 - name: Enable Tailscale service
@@ -206,6 +242,7 @@
       - dconf-cli
       - gsettings-desktop-schemas
     state: present
+    install_recommends: false
   tags: [packages]
 
 - name: Install build dependencies for cargo packages
@@ -217,6 +254,7 @@
       - libssl-dev
       - libdbus-1-dev
     state: present
+    install_recommends: false
   tags: [packages]
 
 - name: Install GTK theming packages
@@ -227,6 +265,7 @@
       - adwaita-icon-theme
       - papirus-icon-theme
     state: present
+    install_recommends: false
   tags: [packages]
 
 - name: Add user to video group (for brightness control)
@@ -282,3 +321,10 @@
     PATH: "{{ user_home }}/.cargo/bin:{{ ansible_env.PATH }}"
   ignore_errors: true
   tags: [packages]
+
+- name: Remove automatically installed packages that are no longer needed
+  become: true
+  ansible.builtin.apt:
+    autoremove: true
+    purge: true
+  tags: [packages, cleanup]

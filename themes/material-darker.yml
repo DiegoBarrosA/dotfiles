@@ -22,7 +22,7 @@ colors:
   base0F: "ff5370"  # Brown - deprecated, dark red
 
 fonts:
-  monospace: "Fantasque Sans Mono"
+  monospace: "FantasqueSansM Nerd Font"
   sans_serif: "Cantarell"
   serif: "DejaVu Serif"
   
@@ -33,5 +33,5 @@ fonts:
     popups: 11
 
 cursor:
-  name: "phinger-cursors-dark"
+  name: "Bibata-Material-Darker"
   size: 24

@@ -3,7 +3,7 @@
 
 # Variables
 set $mod Mod4
-set $term alacritty
+set $term ghostty
 set $menu fuzzel
 
 # Colors (Material Darker)
@@ -49,7 +49,7 @@ client.placeholder      $base00   $base00   $base03   $base00   $base00
 client.background       $base00
 
 # Output configuration
-output * bg $base00 solid_color
+output * bg #212121 solid_color
 
 # Input configuration
 input type:keyboard {
@@ -64,11 +64,11 @@ input type:touchpad {
 }
 
 # Cursor
-seat * xcursor_theme phinger-cursors-dark 24
+seat * xcursor_theme Bibata-Material-Darker 24
 
 # Workspace assignments
-assign [app_id="firefox"] 5
-assign [app_id="firefox_firefox"] 5
+assign [app_id="microsoft-edge"] 5
+assign [app_id="^msedge-.*jijnmpkkfkjaihbhffejemnpbbglahim.*$"] 10
 assign [app_id="cursor"] 6
 assign [app_id="pcmanfm"] 7
 assign [app_id="obsidian"] 8
@@ -85,6 +85,7 @@ bindsym $mod+w kill
 bindsym $mod+space exec $menu
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec ~/.config/sway/scripts/power-menu.sh
+bindsym $mod+Shift+i exec ~/.config/sway/scripts/toggle-virtual-outputs.sh
 bindsym $mod+Escape exec swaylock -f
 
 # Brightness controls
@@ -161,8 +162,9 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Launch-or-focus shortcuts
-bindsym $mod+f exec ~/.config/sway/scripts/launch-or-focus.sh firefox 5 firefox
-bindsym $mod+d exec ~/.config/sway/scripts/launch-or-focus.sh cursor 6 cursor --enable-features=UseOzonePlatform --ozone-platform=wayland
+bindsym $mod+f exec ~/.config/sway/scripts/launch-or-focus.sh microsoft-edge 5 flatpak run com.microsoft.Edge
+bindsym $mod+d workspace number 6
+bindsym $mod+m workspace number 9
 bindsym $mod+e exec ~/.config/sway/scripts/launch-or-focus.sh pcmanfm 7 pcmanfm
 bindsym $mod+n exec ~/.config/sway/scripts/launch-or-focus.sh obsidian 8 obsidian
 
@@ -192,13 +194,14 @@ bindswitch --reload --locked lid:on exec 'swaylock -f && systemctl suspend'
 # Startup commands
 exec swayr daemon
 exec autotiling
+exec flatpak run --command=/app/bin/edge com.microsoft.Edge --profile-directory='Profile 1' --app-id=jijnmpkkfkjaihbhffejemnpbbglahim --app-url=https://trello.com/
 exec swayidle -w timeout 300 'swaylock -f' timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' before-sleep 'swaylock -f'
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway XCURSOR_THEME XCURSOR_SIZE
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XCURSOR_THEME XCURSOR_SIZE DISPLAY SWAYSOCK
 
 # GTK settings
 exec_always {
-    gsettings set org.gnome.desktop.interface cursor-theme 'phinger-cursors-dark'
+    gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Material-Darker'
     gsettings set org.gnome.desktop.interface cursor-size 24
 }
 

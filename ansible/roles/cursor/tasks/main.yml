@@ -1,0 +1,70 @@
+---
+# Cursor AI editor installation
+
+- name: Check if Cursor is already installed
+  ansible.builtin.stat:
+    path: /usr/bin/cursor
+  register: cursor_installed
+  tags: [cursor]
+
+- name: Download Cursor .deb package
+  ansible.builtin.get_url:
+    url: "https://downloader.cursor.sh/linux/debian/x64"
+    dest: /tmp/cursor.deb
+    mode: '0644'
+  when: not cursor_installed.stat.exists
+  tags: [cursor]
+
+- name: Install Cursor from .deb
+  become: true
+  ansible.builtin.apt:
+    deb: /tmp/cursor.deb
+    state: present
+  when: not cursor_installed.stat.exists
+  tags: [cursor]
+
+- name: Remove downloaded .deb file
+  ansible.builtin.file:
+    path: /tmp/cursor.deb
+    state: absent
+  when: not cursor_installed.stat.exists
+  tags: [cursor]
+
+- name: Create local applications directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.local/share/applications"
+    state: directory
+    mode: '0755'
+  tags: [cursor]
+
+- name: Create Cursor desktop entry with Wayland flags
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.local/share/applications/cursor.desktop"
+    mode: '0644'
+    content: |
+      [Desktop Entry]
+      Name=Cursor
+      Comment=AI-powered code editor
+      Exec=/usr/bin/cursor --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime %F
+      Icon=cursor
+      Terminal=false
+      Type=Application
+      Categories=Development;IDE;TextEditor;
+      MimeType=text/plain;text/x-chdr;text/x-csrc;text/x-c++hdr;text/x-c++src;text/x-java;text/x-dsrc;text/x-pascal;text/x-perl;text/x-python;application/x-php;application/x-httpd-php3;application/x-httpd-php4;application/x-httpd-php5;application/xml;text/html;text/css;text/x-sql;text/x-diff;x-directory/normal;inode/directory;
+      StartupWMClass=Cursor
+      StartupNotify=true
+  tags: [cursor]
+
+- name: Create Cursor config directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.config/Cursor/User"
+    state: directory
+    mode: '0755'
+  tags: [cursor, config]
+
+- name: Deploy Cursor settings
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../configs/cursor/settings.json"
+    dest: "{{ user_home }}/.config/Cursor/User/settings.json"
+    mode: '0644'
+  tags: [cursor, config]

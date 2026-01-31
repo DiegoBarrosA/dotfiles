@@ -96,7 +96,7 @@
 
 - name: Set cursor theme via dconf
   ansible.builtin.command:
-    cmd: "dconf write /org/gnome/desktop/interface/cursor-theme \"'phinger-cursors-dark'\""
+    cmd: "dconf write /org/gnome/desktop/interface/cursor-theme \"'Bibata-Material-Darker'\""
   changed_when: false
   tags: [gtk, config]
 
@@ -134,8 +134,8 @@
 
 - name: Symlink cursor theme to .icons for legacy apps
   ansible.builtin.file:
-    src: "{{ user_home }}/.local/share/icons/phinger-cursors-dark"
-    dest: "{{ user_home }}/.icons/phinger-cursors-dark"
+    src: "{{ user_home }}/.local/share/icons/Bibata-Material-Darker"
+    dest: "{{ user_home }}/.icons/Bibata-Material-Darker"
     state: link
     force: true
   ignore_errors: true

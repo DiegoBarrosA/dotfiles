@@ -11,6 +11,7 @@
       - fonts-noto-cjk
       - fonts-noto-cjk-extra
     state: present
+    install_recommends: false
   tags: [fonts, packages]
 
 - name: Create local fonts directory
@@ -20,13 +21,13 @@
     mode: '0755'
   tags: [fonts, config]
 
-- name: Check if Fantasque Sans Mono is installed
+- name: Check if Fantasque Sans Mono Nerd Font is installed
   ansible.builtin.stat:
-    path: "{{ user_home }}/.local/share/fonts/FantasqueSansMono-Regular.ttf"
+    path: "{{ user_home }}/.local/share/fonts/FantasqueSansMNerdFont-Regular.ttf"
   register: fantasque_font
   tags: [fonts, config]
 
-- name: Download Fantasque Sans Mono
+- name: Download Fantasque Sans Mono Nerd Font
   when: not fantasque_font.stat.exists
   block:
     - name: Create temp directory for font download
@@ -35,26 +36,26 @@
         suffix: fonts
       register: font_temp_dir
       
-    - name: Download Fantasque Sans Mono
+    - name: Download Fantasque Sans Mono Nerd Font
       ansible.builtin.get_url:
-        url: "https://github.com/belluzj/fantasque-sans/releases/download/v1.8.0/FantasqueSansMono-Normal.zip"
-        dest: "{{ font_temp_dir.path }}/fantasque.zip"
+        url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FantasqueSansMono.zip"
+        dest: "{{ font_temp_dir.path }}/fantasque-nerd.zip"
         mode: '0644'
         
-    - name: Extract Fantasque Sans Mono
+    - name: Extract Fantasque Sans Mono Nerd Font
       ansible.builtin.unarchive:
-        src: "{{ font_temp_dir.path }}/fantasque.zip"
+        src: "{{ font_temp_dir.path }}/fantasque-nerd.zip"
         dest: "{{ font_temp_dir.path }}"
         remote_src: true
         
-    - name: Copy Fantasque Sans Mono TTF files
+    - name: Copy Fantasque Sans Mono Nerd Font TTF files
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ user_home }}/.local/share/fonts/"
         mode: '0644'
         remote_src: true
       with_fileglob:
-        - "{{ font_temp_dir.path }}/TTF/*.ttf"
+        - "{{ font_temp_dir.path }}/*.ttf"
         
     - name: Clean up temp directory
       ansible.builtin.file:

@@ -1,0 +1,179 @@
+---
+# Bibata Cursor - Build from Source with Material Darker Colors
+
+- name: Install Bibata cursor build dependencies (system packages)
+  become: true
+  ansible.builtin.apt:
+    name:
+      - git
+      - curl
+      - python3
+      - python3-pip
+      - python3-venv
+      - pipx
+    state: present
+    update_cache: true
+    install_recommends: false
+  tags: [bibata-cursor, cursor]
+
+# Install Node.js 20 from NodeSource for ESM compatibility
+- name: Check Node.js version
+  ansible.builtin.command:
+    cmd: node --version
+  register: node_version
+  changed_when: false
+  failed_when: false
+  tags: [bibata-cursor, cursor]
+
+- name: Remove old Node.js if version < 20
+  become: true
+  ansible.builtin.apt:
+    name: nodejs
+    state: absent
+    purge: true
+  when: node_version.stdout is defined and node_version.stdout is not match('v2[0-9]')
+  tags: [bibata-cursor, cursor]
+
+- name: Add NodeSource GPG key and repository for Node.js 20
+  become: true
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+  when: node_version.stdout is not defined or node_version.stdout is not match('v2[0-9]')
+  tags: [bibata-cursor, cursor]
+
+- name: Install Node.js 20
+  become: true
+  ansible.builtin.apt:
+    name: nodejs
+    state: present
+    update_cache: true
+  tags: [bibata-cursor, cursor]
+
+- name: Install yarn globally via npm
+  become: true
+  ansible.builtin.command:
+    cmd: npm install -g yarn
+  changed_when: false
+  tags: [bibata-cursor, cursor]
+
+- name: Ensure pipx path is set up
+  ansible.builtin.command:
+    cmd: pipx ensurepath
+  changed_when: false
+  tags: [bibata-cursor, cursor]
+
+- name: Install clickgen (ctgen) via pipx
+  ansible.builtin.command:
+    cmd: pipx install clickgen
+    creates: "{{ user_home }}/.local/bin/ctgen"
+  tags: [bibata-cursor, cursor]
+
+- name: Create cursor icons directory
+  ansible.builtin.file:
+    path: "{{ user_home }}/.local/share/icons"
+    state: directory
+    mode: '0755'
+  tags: [bibata-cursor, cursor]
+
+- name: Check if custom Bibata cursor is already installed
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.local/share/icons/{{ bibata_cursor_name }}"
+  register: bibata_installed
+  tags: [bibata-cursor, cursor]
+
+- name: Clone Bibata_Cursor repository
+  ansible.builtin.git:
+    repo: "{{ bibata_repo }}"
+    dest: "{{ bibata_build_dir }}"
+    version: main
+    force: true
+  when: not bibata_installed.stat.exists
+  tags: [bibata-cursor, cursor]
+
+- name: Install Node.js dependencies with yarn
+  ansible.builtin.command:
+    cmd: yarn install
+    chdir: "{{ bibata_build_dir }}"
+  when: not bibata_installed.stat.exists
+  tags: [bibata-cursor, cursor]
+
+- name: Add custom Material Darker theme to render.json
+  ansible.builtin.template:
+    src: render-custom.json.j2
+    dest: "{{ bibata_build_dir }}/render-custom.json"
+    mode: '0644'
+  when: not bibata_installed.stat.exists
+  tags: [bibata-cursor, cursor]
+
+- name: Render custom cursor bitmaps with cbmp
+  ansible.builtin.command:
+    cmd: npx cbmp render-custom.json
+    chdir: "{{ bibata_build_dir }}"
+  when: not bibata_installed.stat.exists
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ user_home }}/.local/bin"
+  tags: [bibata-cursor, cursor]
+
+- name: Create custom build script for single theme
+  ansible.builtin.copy:
+    dest: "{{ bibata_build_dir }}/build-custom.sh"
+    mode: '0755'
+    content: |
+      #!/bin/bash
+      set -e
+      
+      # Ensure ctgen is in PATH
+      export PATH="$HOME/.local/bin:$PATH"
+      
+      name="{{ bibata_cursor_name }}"
+      comment="{{ bibata_cursor_name }} - Material Darker cursor theme"
+      cfg_path="configs/normal"
+      
+      # Clean old builds
+      rm -rf "themes/$name"
+      
+      # Build X11 cursors
+      ctgen "$cfg_path/x.build.toml" -p x11 -d "bitmaps/$name" -n "$name" -c "$comment"
+      
+      echo "Build complete: themes/$name"
+  when: not bibata_installed.stat.exists
+  tags: [bibata-cursor, cursor]
+
+- name: Build custom Bibata cursor theme
+  ansible.builtin.command:
+    cmd: bash build-custom.sh
+    chdir: "{{ bibata_build_dir }}"
+  when: not bibata_installed.stat.exists
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ user_home }}/.local/bin"
+    HOME: "{{ user_home }}"
+  tags: [bibata-cursor, cursor]
+
+- name: Copy built cursor theme to icons directory
+  ansible.builtin.copy:
+    src: "{{ bibata_build_dir }}/themes/{{ bibata_cursor_name }}/"
+    dest: "{{ user_home }}/.local/share/icons/{{ bibata_cursor_name }}/"
+    remote_src: true
+    mode: '0755'
+  when: not bibata_installed.stat.exists
+  tags: [bibata-cursor, cursor]
+
+- name: Clean up build directory
+  ansible.builtin.file:
+    path: "{{ bibata_build_dir }}"
+    state: absent
+  tags: [bibata-cursor, cursor]
+
+- name: Display cursor installation notice
+  ansible.builtin.debug:
+    msg: |
+      Bibata cursor has been built and installed!
+      
+      Cursor theme: {{ bibata_cursor_name }}
+      Location: {{ user_home }}/.local/share/icons/{{ bibata_cursor_name }}
+      
+      Colors:
+      - Base: {{ bibata_colors.base }}
+      - Outline: {{ bibata_colors.outline }}
+      - Accent: {{ bibata_colors.accent }}
+  tags: [bibata-cursor, cursor]
